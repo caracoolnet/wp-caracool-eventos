@@ -1,0 +1,82 @@
+/*
+ * Caracool Eventos · listado y ficha.
+ *
+ * Hereda tipografía y color del contenedor. Los acentos salen de los colores
+ * globales de Elementor si existen. El filtro son <button>: el Kit de
+ * Elementor estiliza todos los botones de la web, así que sus reglas llevan la
+ * clase de la raíz dos veces para ganar también en :hover y :focus.
+ */
+
+.ce-listado {
+	--ce-linea: color-mix(in srgb, currentColor 18%, transparent);
+	--ce-aire: 1.4em;
+	--ce-filtro: var(--e-global-color-primary, currentColor);
+	--ce-filtro-txt: #fff;
+	--ce-suave: color-mix(in srgb, currentColor 62%, transparent);
+}
+.ce-listado [hidden] { display: none !important; }
+
+/* Filtro */
+.ce-listado.ce-listado .ce-filtro { display: flex; flex-wrap: wrap; gap: .5em; margin: 0 0 1.6em; padding: 0; }
+.ce-listado.ce-listado .ce-filtro-btn {
+	appearance: none; margin: 0; cursor: pointer; white-space: normal;
+	font: inherit; font-size: .9em; line-height: 1.2; letter-spacing: normal; text-transform: none;
+	padding: .55em 1.1em; border-radius: 999px;
+	border: 1.5px solid currentColor; background: transparent; color: inherit;
+	box-shadow: none; transition: background-color .2s, color .2s, border-color .2s;
+}
+.ce-listado.ce-listado .ce-filtro-btn:hover { background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; }
+.ce-listado.ce-listado .ce-filtro-btn:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; color: inherit; background: transparent; }
+.ce-listado.ce-listado .ce-filtro-btn[aria-pressed="true"],
+.ce-listado.ce-listado .ce-filtro-btn[aria-pressed="true"]:hover,
+.ce-listado.ce-listado .ce-filtro-btn[aria-pressed="true"]:focus-visible {
+	background: var(--ce-filtro); border-color: var(--ce-filtro); color: var(--ce-filtro-txt);
+}
+
+/* Lista */
+.ce-lista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ce-linea); }
+.ce-evento {
+	display: grid; grid-template-columns: 5.2em minmax(0, 1fr) auto; gap: .4em 1.6em; align-items: center;
+	padding: var(--ce-aire) 0; border-bottom: 1px solid var(--ce-linea); margin: 0;
+}
+.ce-evento[hidden] { display: none; }
+
+.ce-fecha { display: flex; flex-direction: column; line-height: 1; text-align: left; }
+.ce-dia { font-size: 2.4em; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ce-mes { font-size: .95em; margin-top: .3em; text-transform: lowercase; }
+.ce-anio { font-size: .8em; margin-top: .25em; color: var(--ce-suave); }
+
+.ce-info { min-width: 0; }
+.ce-titulo { margin: 0; font-size: 1.25em; line-height: 1.25; }
+.ce-titulo a { color: inherit; text-decoration: none; }
+.ce-titulo a:hover, .ce-titulo a:focus-visible { text-decoration: underline; text-underline-offset: .18em; }
+.ce-meta { margin: .35em 0 0; font-size: .95em; color: var(--ce-suave); display: flex; flex-wrap: wrap; align-items: center; gap: .2em .7em; }
+.ce-sep { width: 3px; height: 3px; border-radius: 50%; background: currentColor; display: inline-block; }
+.ce-aviso-estado { margin: .45em 0 0; font-size: .85em; font-weight: 600; }
+
+.ce-accion { justify-self: end; }
+.ce-accion .ce-boton { white-space: nowrap; }
+.ce-estado {
+	display: inline-block; font-size: .85em; font-weight: 600; line-height: 1; padding: .6em 1em;
+	border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap;
+}
+.ce-estado-cancelado .ce-titulo a { text-decoration: line-through; text-decoration-thickness: 1px; }
+.ce-estado-cancelado .ce-fecha, .ce-estado-cancelado .ce-info { opacity: .6; }
+
+.ce-pasados .ce-evento { opacity: .75; }
+.ce-vacio { margin: 0; padding: 1.2em 0; color: var(--ce-suave, inherit); }
+
+@media (max-width: 640px) {
+	.ce-evento { grid-template-columns: 4.2em minmax(0, 1fr); }
+	.ce-dia { font-size: 2em; }
+	.ce-accion { grid-column: 2; justify-self: start; margin-top: .4em; }
+}
+
+/* Ficha del evento */
+.ce-ficha { margin: 0 0 1.8em; }
+.ce-ficha dl { margin: 0; display: grid; gap: 0; border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.ce-ficha-fila { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 1em; padding: .9em 0; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.ce-ficha dt { font-weight: 600; margin: 0; }
+.ce-ficha dd { margin: 0; }
+.ce-ficha-accion { margin-top: 1.2em; }
+@media (max-width: 520px) { .ce-ficha-fila { grid-template-columns: 1fr; gap: .2em; } }
