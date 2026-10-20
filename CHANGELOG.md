@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.2.0, 20 de octubre de 2026
+
+- La lista de eventos del admin se abre en «Próximos» y tiene una pestaña «Pasados». Detrás quedan Borradores y Papelera. Los próximos van del más cercano al más lejano; los pasados, del más reciente al más antiguo.
+- Un evento que ya ha terminado sigue diciendo a Google que estaba programado, porque se celebró, pero deja de ofrecer entradas en sus datos estructurados.
+- El importador ya no saca la hora de fin de la fecha de fin. Solo la toma si viene en su propio campo, `hora_fin`, porque los calendarios suelen rellenarla por defecto.
+
 ## 0.1.0, 19 de octubre de 2026
 
 Primera versión.

@@ -19,9 +19,9 @@ Caracool → Eventos. Tres pestañas:
 
 - **Ajustes.** Base de la URL de cada evento (`/evento/nombre/` por defecto), artista y tipo de artista para Google, organizador, moneda, texto del botón y si la venta se abre en otra pestaña.
 - **Cómo se usa.** Opciones del shortcode.
-- **Importar.** Pegar una lista de eventos en JSON. Si un evento ya existe con la misma dirección, se actualiza.
+- **Importar.** Pegar una lista de eventos en JSON. Si un evento ya existe con la misma dirección, se actualiza. La hora de fin solo se importa si viene en el campo `hora_fin`.
 
-Los eventos se crean y editan en el menú **Eventos**, con el editor clásico para que la caja de datos quede a la vista.
+Los eventos se crean y editan en el menú **Eventos**, con el editor clásico para que la caja de datos quede a la vista. La lista se abre en **Próximos**; al lado están **Pasados**, **Borradores** y **Papelera**.
 
 ## Cómo se pone en una página
 
@@ -50,6 +50,8 @@ Cuando termina: a su hora de fin si la tiene y, si no, al acabar su último día
 ## Datos para Google
 
 Cada evento lleva un bloque JSON-LD de tipo `MusicEvent` con nombre, fechas con zona horaria, estado, modalidad presencial, lugar con dirección, imagen, descripción, oferta (enlace, disponibilidad, precio y moneda), artista y organizador. Va en la página del evento y, si está activado en los ajustes, también en los listados.
+
+Cuando un evento ya ha terminado, el bloque se queda igual (el estado sigue siendo «programado», porque se celebró) pero sin la oferta de entradas.
 
 Google necesita como mínimo la fecha y el lugar con dirección o ciudad. La caja del evento avisa de lo que falta, y la lista de eventos señala los próximos que no lo cumplen.
 
