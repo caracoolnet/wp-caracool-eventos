@@ -27,7 +27,7 @@ Los eventos se crean y editan en el menú **Eventos**, con el editor clásico pa
 
 Con Elementor hay dos widgets:
 
-- **Eventos**: el listado, con categorías, próximos o histórico, cuántos, filtro y qué se lee primero (título o ciudad). Colores y tipografías en la pestaña de estilo.
+- **Eventos**: el listado, con categorías, próximos o histórico, cuántos, filtro, qué se lee primero (título o ciudad) y si se enseña el año. La fecha va en bloque: día de la semana, número y mes al ancho del número. Colores y tipografías en la pestaña de estilo.
 - **Ficha del evento**: fecha, lugar con enlace al mapa, estado, precio y botón. Para la plantilla de entrada de los eventos en el Maquetador de temas.
 
 Sin Elementor:
@@ -35,7 +35,7 @@ Sin Elementor:
 ```
 [caracool_eventos]
 [caracool_eventos categoria="gira-ellar" limite="6" filtro="no"]
-[caracool_eventos pasados="solo" vacio="Aún no hay histórico"]
+[caracool_eventos pasados="solo" anio="si" vacio="Aún no hay histórico"]
 [caracool_evento]
 ```
 
@@ -70,7 +70,7 @@ modules/ce-listado.php    listado, ficha y shortcodes
 modules/ce-widget.php     widgets de Elementor
 modules/ce-importar.php   importación desde JSON
 assets/ce-front.css       estilos del listado y la ficha
-assets/ce-front.js        filtro por categoría
+assets/ce-front.js        ancho del mes y filtro por categoría
 ```
 
 Datos de cada evento (post meta): `_ce_inicio`, `_ce_hora_inicio`, `_ce_fin`, `_ce_hora_fin`, `_ce_estado`, `_ce_venta_url`, `_ce_venta_blank`, `_ce_boton`, `_ce_precio`, `_ce_artista`. Las consultas usan dos marcas de tiempo calculadas, `_ce_ts_inicio` y `_ce_ts_fin`. Todos están en la API REST.

@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.3.0, 20 de octubre de 2026
+
+- Nueva fecha en el listado: el día de la semana pequeño arriba, el número grande y el mes debajo, al mismo ancho que el número. El ancho lo ajusta `ce-front.js`; con un solo dígito el mes toma el ancho de dos, y un «10–12» se reduce hasta caber en su columna.
+- El año ya no se ve por defecto. El widget tiene el interruptor «Mostrar el año» y el shortcode, `anio="si"`. Los lectores de pantalla siguen oyendo la fecha completa.
+- En la pestaña de estilo del widget, la tipografía «Mes y año» pasa a ser tres controles: día de la semana, mes y año.
+
 ## 0.2.0, 20 de octubre de 2026
 
 - La lista de eventos del admin se abre en «Próximos» y tiene una pestaña «Pasados». Detrás quedan Borradores y Papelera. Los próximos van del más cercano al más lejano; los pasados, del más reciente al más antiguo.
