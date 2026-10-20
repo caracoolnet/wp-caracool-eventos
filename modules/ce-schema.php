@@ -5,7 +5,8 @@
  * Cada evento lleva su bloque JSON-LD de schema.org (MusicEvent, un tipo de
  * Event) con lo que Google pide y recomienda: nombre, fechas con zona horaria,
  * estado, modalidad, lugar con dirección, imagen, descripción, oferta de
- * entradas, artista y organizador.
+ * entradas, artista y organizador. Cuando el evento ya ha terminado, el bloque
+ * se queda igual pero sin la oferta de entradas.
  *
  * Va en la página de cada evento y, si está activado en los ajustes, también
  * en los listados, uno por evento mostrado.
@@ -82,7 +83,12 @@ function caracool_eventos_schema( $d ) {
 		$e['description'] = wp_strip_all_tags( $d['resumen'] );
 	}
 
-	if ( $d['venta_url'] ) {
+	// Un evento que ya ha terminado conserva su estado (sigue siendo «programado»:
+	// se celebró), pero deja de ofrecer entradas.
+	$ts_fin  = (int) get_post_meta( $d['id'], '_ce_ts_fin', true );
+	$pasado  = $ts_fin && $ts_fin < time();
+
+	if ( $d['venta_url'] && ! $pasado ) {
 		$oferta = array(
 			'@type'        => 'Offer',
 			'url'          => $d['venta_url'],

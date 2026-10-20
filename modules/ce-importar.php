@@ -12,7 +12,7 @@
  *   status                publish, draft…
  *   fecha | inicio        AAAA-MM-DD
  *   hora | hora_inicio    HH:MM
- *   fin                   AAAA-MM-DD o «AAAA-MM-DD HH:MM»
+ *   fin                   AAAA-MM-DD (si trae hora, se ignora)
  *   hora_fin              HH:MM
  *   ocultar_hora          true para no dar hora
  *   lugar                 nombre del lugar (se crea si no existe)
@@ -147,7 +147,9 @@ function caracool_eventos_importar( $lista, $op = array() ) {
 		$hora    = $ocultar ? '' : (string) $val( $e, array( 'hora', 'hora_inicio' ) );
 		$fin_raw = trim( (string) $val( $e, 'fin' ) );
 		$fin_dia = substr( $fin_raw, 0, 10 );
-		$hfin    = (string) $val( $e, 'hora_fin', strlen( $fin_raw ) > 10 ? trim( substr( $fin_raw, 11, 5 ) ) : '' );
+		// La hora de fin solo se importa si viene en su propio campo. La que
+		// traiga «fin» se ignora: los calendarios suelen rellenarla por defecto.
+		$hfin    = (string) $val( $e, 'hora_fin' );
 		// Una hora de fin a medianoche o anterior al inicio no aporta nada.
 		if ( $ocultar || '' === $hora || in_array( $hfin, array( '23:59', '00:00' ), true ) || ( $fin_dia === $fecha && $hfin <= $hora ) ) {
 			$hfin = '';

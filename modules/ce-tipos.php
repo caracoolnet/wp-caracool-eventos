@@ -485,24 +485,116 @@ add_filter(
 	}
 );
 
+// ── Listado del admin: pestañas Próximos, Pasados, Borradores y Papelera ──
+
+/** Qué pestaña de tiempo está abierta en la lista de eventos: proximos, pasados o vacío. */
+function caracool_eventos_vista_admin() {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['ce_cuando'] ) ) {
+		$v = sanitize_key( wp_unslash( $_GET['ce_cuando'] ) );
+		return in_array( $v, array( 'proximos', 'pasados' ), true ) ? $v : '';
+	}
+	// Sin pestaña, sin estado y sin búsqueda, la lista se abre en Próximos.
+	if ( empty( $_GET['post_status'] ) && empty( $_GET['s'] ) && empty( $_GET['m'] ) && empty( $_GET['cc_evento_cat'] ) ) {
+		return 'proximos';
+	}
+	// phpcs:enable
+	return '';
+}
+
+/** Condición de fecha de cada pestaña, para meta_query. */
+function caracool_eventos_condicion_vista( $vista ) {
+	$ahora = time();
+	if ( 'pasados' === $vista ) {
+		return array( 'key' => '_ce_ts_fin', 'value' => $ahora, 'compare' => '<', 'type' => 'NUMERIC' );
+	}
+	// Próximos: los que aún no han terminado y los publicados sin fecha, para que no se pierdan.
+	return array(
+		'relation' => 'OR',
+		array( 'key' => '_ce_ts_fin', 'value' => $ahora, 'compare' => '>=', 'type' => 'NUMERIC' ),
+		array( 'key' => '_ce_ts_fin', 'compare' => 'NOT EXISTS' ),
+	);
+}
+
+/** Cuántos eventos publicados hay en una pestaña. */
+function caracool_eventos_contar_vista( $vista ) {
+	$q = new WP_Query(
+		array(
+			'post_type'              => 'cc_evento',
+			'post_status'            => 'publish',
+			'posts_per_page'         => 1,
+			'fields'                 => 'ids',
+			'no_found_rows'          => false,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_query'             => array( caracool_eventos_condicion_vista( $vista ) ), // phpcs:ignore WordPress.DB.SlowDBQuery
+		)
+	);
+	return (int) $q->found_posts;
+}
+
+add_filter(
+	'views_edit-cc_evento',
+	function ( $views ) {
+		$vista = caracool_eventos_vista_admin();
+		$base  = admin_url( 'edit.php?post_type=cc_evento' );
+		$nuevo = array();
+		foreach ( array( 'proximos' => 'Próximos', 'pasados' => 'Pasados' ) as $clave => $nombre ) {
+			$nuevo[ 'ce_' . $clave ] = sprintf(
+				'<a href="%s"%s>%s <span class="count">(%d)</span></a>',
+				esc_url( add_query_arg( 'ce_cuando', $clave, $base ) ),
+				$vista === $clave ? ' class="current" aria-current="page"' : '',
+				esc_html( $nombre ),
+				caracool_eventos_contar_vista( $clave )
+			);
+		}
+		// Detrás, los estados de WordPress que no son «publicado»: borradores,
+		// pendientes, programados para publicarse, privados y papelera.
+		foreach ( $views as $clave => $html ) {
+			if ( in_array( $clave, array( 'all', 'publish', 'mine' ), true ) ) {
+				continue;
+			}
+			$nuevo[ $clave ] = $html;
+		}
+		return $nuevo;
+	}
+);
+
 add_action(
 	'pre_get_posts',
 	function ( $q ) {
 		if ( ! is_admin() || ! $q->is_main_query() || 'cc_evento' !== $q->get( 'post_type' ) ) {
 			return;
 		}
+		global $pagenow;
+		if ( 'edit.php' !== $pagenow ) {
+			return;
+		}
+		$vista = caracool_eventos_vista_admin();
 		$orden = $q->get( 'orderby' );
+
+		// Con un OR de EXISTS / NOT EXISTS, los eventos sin fecha siguen
+		// saliendo en la lista en vez de desaparecer al ordenar.
+		$fecha = array(
+			'relation' => 'OR',
+			'ce_f'     => array( 'key' => '_ce_ts_inicio', 'compare' => 'EXISTS', 'type' => 'NUMERIC' ),
+			array( 'key' => '_ce_ts_inicio', 'compare' => 'NOT EXISTS' ),
+		);
+
+		if ( $vista ) {
+			$q->set( 'post_status', 'publish' );
+			$q->set( 'meta_query', array( 'relation' => 'AND', $fecha, caracool_eventos_condicion_vista( $vista ) ) );
+			// Próximos, del más cercano al más lejano; pasados, del más reciente al más antiguo.
+			$dir = 'pasados' === $vista ? 'DESC' : 'ASC';
+			if ( 'ce_fecha' === $orden ) {
+				$dir = 'DESC' === strtoupper( (string) $q->get( 'order' ) ) ? 'DESC' : 'ASC';
+			}
+			$q->set( 'orderby', array( 'ce_f' => $dir ) );
+			return;
+		}
+
 		if ( 'ce_fecha' === $orden || '' === $orden ) {
-			// Con un OR de EXISTS / NOT EXISTS, los borradores sin fecha siguen
-			// saliendo en la lista en vez de desaparecer al ordenar.
-			$q->set(
-				'meta_query',
-				array(
-					'relation' => 'OR',
-					'ce_f'     => array( 'key' => '_ce_ts_inicio', 'compare' => 'EXISTS', 'type' => 'NUMERIC' ),
-					array( 'key' => '_ce_ts_inicio', 'compare' => 'NOT EXISTS' ),
-				)
-			);
+			$q->set( 'meta_query', $fecha );
 			$q->set( 'orderby', array( 'ce_f' => '' === $orden ? 'DESC' : ( 'DESC' === strtoupper( (string) $q->get( 'order' ) ) ? 'DESC' : 'ASC' ) ) );
 		}
 	}
