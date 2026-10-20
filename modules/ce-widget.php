@@ -112,6 +112,16 @@ class Caracool_Eventos_Widget extends \Elementor\Widget_Base {
 			)
 		);
 		$this->add_control(
+			'anio',
+			array(
+				'label'        => 'Mostrar el año',
+				'type'         => Controls_Manager::SWITCHER,
+				'default'      => '',
+				'return_value' => 'yes',
+				'description'  => 'Útil en el histórico, donde se mezclan años.',
+			)
+		);
+		$this->add_control(
 			'vacio',
 			array(
 				'label'       => 'Texto sin eventos',
@@ -153,8 +163,10 @@ class Caracool_Eventos_Widget extends \Elementor\Widget_Base {
 				'selectors' => array( '{{WRAPPER}} .ce-fecha' => 'color: {{VALUE}};' ),
 			)
 		);
+		$this->add_group_control( Group_Control_Typography::get_type(), array( 'name' => 'tipo_semana', 'label' => 'Día de la semana', 'selector' => '{{WRAPPER}} .ce-semana' ) );
 		$this->add_group_control( Group_Control_Typography::get_type(), array( 'name' => 'tipo_dia', 'label' => 'Día', 'selector' => '{{WRAPPER}} .ce-dia' ) );
-		$this->add_group_control( Group_Control_Typography::get_type(), array( 'name' => 'tipo_mes', 'label' => 'Mes y año', 'selector' => '{{WRAPPER}} .ce-mes, {{WRAPPER}} .ce-anio' ) );
+		$this->add_group_control( Group_Control_Typography::get_type(), array( 'name' => 'tipo_mes', 'label' => 'Mes (el tamaño lo ajusta solo al ancho del día)', 'selector' => '{{WRAPPER}} .ce-mes' ) );
+		$this->add_group_control( Group_Control_Typography::get_type(), array( 'name' => 'tipo_anio', 'label' => 'Año', 'selector' => '{{WRAPPER}} .ce-anio' ) );
 		$this->end_controls_section();
 
 		$this->start_controls_section( 'estilo_texto', array( 'label' => 'Título y datos', 'tab' => Controls_Manager::TAB_STYLE ) );
@@ -213,6 +225,7 @@ class Caracool_Eventos_Widget extends \Elementor\Widget_Base {
 				'pasados'   => $s['pasados'],
 				'destacar'  => $s['destacar'],
 				'vacio'     => $s['vacio'],
+				'anio'      => isset( $s['anio'] ) && 'yes' === $s['anio'] ? 'si' : 'no',
 			)
 		);
 	}

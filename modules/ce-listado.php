@@ -3,7 +3,7 @@
  * Caracool Eventos · listado y ficha.
  *
  *   [caracool_eventos]  listado con filtro por categoría (también como widget
- *                       de Elementor, «Eventos»)
+ *                       de Elementor, «Eventos»). anio="si" enseña el año.
  *   [caracool_evento]   ficha del evento actual: fechas, lugar, estado, precio
  *                       y botón de compra. Para plantillas de Elementor Pro.
  *
@@ -39,6 +39,7 @@ function caracool_eventos_opciones( $a ) {
 			'destacar'  => 'titulo',
 			'vacio'     => 'No hay fechas a la vista. Vuelve pronto.',
 			'datos'     => '',
+			'anio'      => 'no',
 		),
 		(array) $a,
 		'caracool_eventos'
@@ -53,6 +54,7 @@ function caracool_eventos_opciones( $a ) {
 		'pasados'   => in_array( $a['pasados'], array( 'no', 'solo', 'todos' ), true ) ? $a['pasados'] : 'no',
 		'destacar'  => 'ciudad' === $a['destacar'] ? 'ciudad' : 'titulo',
 		'vacio'     => (string) $a['vacio'],
+		'anio'      => $si( $a['anio'] ),
 		'datos'     => '' === $a['datos'] ? (bool) Caracool_Eventos::ajuste( 'schema_lista' ) : $si( $a['datos'] ),
 	);
 }
@@ -70,27 +72,37 @@ function caracool_eventos_boton( $d, $clase = '' ) {
 	return '<a class="ce-boton elementor-button ' . esc_attr( $clase ) . '" href="' . esc_url( $d['venta_url'] ) . '"' . $attr . ' aria-label="' . $aria . '"><span class="elementor-button-text">' . esc_html( $d['boton'] ) . '</span></a>';
 }
 
-/** El bloque de fecha grande del listado: día, mes y año. */
-function caracool_eventos_bloque_fecha( $d ) {
+/**
+ * El bloque de fecha del listado: día de la semana pequeño, número grande y
+ * mes debajo, al ancho del número (lo ajusta assets/ce-front.js). El año solo
+ * se ve si se pide; para lectores de pantalla va siempre la fecha completa.
+ */
+function caracool_eventos_bloque_fecha( $d, $anio = false ) {
 	$a   = $d['dt_inicio'];
 	$ts  = $a->getTimestamp();
 	$dia = wp_date( 'j', $ts );
-	$mes = wp_date( 'M', $ts );
+	$mes = rtrim( wp_date( 'M', $ts ), '.' );
 	$b   = $d['fin'] ? caracool_eventos_dt( $d['fin'] ) : null;
+	$txt = wp_date( 'l j \d\e F \d\e Y', $ts );
 	if ( $b ) {
+		$tb = $b->getTimestamp();
 		if ( $a->format( 'Y-m' ) === $b->format( 'Y-m' ) ) {
-			$dia .= '–' . wp_date( 'j', $b->getTimestamp() );
+			$dia .= '–' . wp_date( 'j', $tb );
 		} else {
-			$mes .= '–' . wp_date( 'M', $b->getTimestamp() );
-			$dia .= '–' . wp_date( 'j', $b->getTimestamp() );
+			$mes .= '–' . rtrim( wp_date( 'M', $tb ), '.' );
+			$dia .= '–' . wp_date( 'j', $tb );
 		}
+		$txt .= ' al ' . wp_date( 'l j \d\e F \d\e Y', $tb );
 	}
-	$sem = wp_date( 'l', $ts );
+	$sem = rtrim( wp_date( 'D', $ts ), '.' );
 	return '<time class="ce-fecha" datetime="' . esc_attr( $a->format( 'Y-m-d' ) ) . '">'
+		. '<span class="ce-fecha-caja" aria-hidden="true">'
+		. '<span class="ce-semana">' . esc_html( $sem ) . '</span>'
 		. '<span class="ce-dia">' . esc_html( $dia ) . '</span>'
-		. '<span class="ce-mes">' . esc_html( rtrim( $mes, '.' ) ) . '</span>'
-		. '<span class="ce-anio">' . esc_html( $a->format( 'Y' ) ) . '</span>'
-		. '<span class="screen-reader-text">' . esc_html( $sem ) . '</span>'
+		. '<span class="ce-mes">' . esc_html( $mes ) . '</span>'
+		. ( $anio ? '<span class="ce-anio">' . esc_html( $a->format( 'Y' ) ) . '</span>' : '' )
+		. '</span>'
+		. '<span class="ce-sr">' . esc_html( $txt ) . '</span>'
 		. '</time>';
 }
 
@@ -118,11 +130,12 @@ function caracool_eventos_render( $a = array() ) {
 	}
 
 	wp_enqueue_style( 'caracool-eventos' );
+	// El script ajusta el ancho del mes y lleva el filtro por categoría.
+	wp_enqueue_script( 'caracool-eventos' );
 	$uid  = 'ce-' . wp_unique_id();
 	$html = '<div class="ce-listado ce-destaca-' . esc_attr( $o['destacar'] ) . ( 'solo' === $o['pasados'] ? ' ce-pasados' : '' ) . '" id="' . esc_attr( $uid ) . '" data-ce-listado>';
 
 	if ( $o['filtro'] && count( $cats ) > 1 ) {
-		wp_enqueue_script( 'caracool-eventos' );
 		asort( $cats );
 		$html .= '<div class="ce-filtro" role="group" aria-label="Filtrar por categoría">';
 		$html .= '<button type="button" class="ce-filtro-btn" aria-pressed="true" data-ce-cat="">Todos</button>';
@@ -153,7 +166,7 @@ function caracool_eventos_render( $a = array() ) {
 			}
 
 			$html .= '<li class="ce-evento ce-estado-' . esc_attr( $d['estado'] ) . '" data-ce-cats="' . esc_attr( $slugs ) . '">';
-			$html .= caracool_eventos_bloque_fecha( $d );
+			$html .= caracool_eventos_bloque_fecha( $d, $o['anio'] );
 			$html .= '<div class="ce-info">';
 			$html .= '<h3 class="ce-titulo"><a href="' . esc_url( $d['url'] ) . '">' . esc_html( wp_strip_all_tags( $principal ) ) . '</a></h3>';
 			$meta  = array();
