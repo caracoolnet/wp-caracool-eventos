@@ -39,6 +39,7 @@ function caracool_eventos_opciones( $a ) {
 			'vacio'     => 'No hay fechas a la vista. Vuelve pronto.',
 			'datos'     => '',
 			'anio'      => 'no',
+			'etiqueta'  => 'h3',
 			'fecha'     => 'clasico',
 			'semana'    => '',
 		),
@@ -53,6 +54,7 @@ function caracool_eventos_opciones( $a ) {
 	return array(
 		'fecha'     => $fecha,
 		'semana'    => $semana,
+		'etiqueta'  => caracool_eventos_etiqueta( $a['etiqueta'] ),
 		'categoria' => (string) $a['categoria'],
 		'filtro'    => $si( $a['filtro'] ),
 		'limite'    => (int) $a['limite'],
@@ -72,8 +74,14 @@ function caracool_eventos_disenos_fecha() {
 	return array( 'clasico', 'calendario', 'bloque', 'contorno', 'linea' );
 }
 
+/** Etiqueta HTML permitida para un texto, como en el Encabezado de Elementor. */
+function caracool_eventos_etiqueta( $t, $def = 'h3' ) {
+	$t = strtolower( (string) $t );
+	return in_array( $t, array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'p' ), true ) ? $t : $def;
+}
+
 /** Enlace de compra o de más información, con el estilo de botón del Kit. */
-function caracool_eventos_boton( $d, $clase = '' ) {
+function caracool_eventos_boton( $d, $clase = '', $icono = '' ) {
 	if ( in_array( $d['estado'], array( 'agotado', 'cancelado' ), true ) ) {
 		return '<span class="ce-estado ce-estado-' . esc_attr( $d['estado'] ) . '">' . esc_html( $d['estado_txt'] ) . '</span>';
 	}
@@ -82,7 +90,7 @@ function caracool_eventos_boton( $d, $clase = '' ) {
 	}
 	$attr = $d['venta_blank'] ? ' target="_blank" rel="noopener"' : '';
 	$aria = esc_attr( $d['boton'] . ': ' . wp_strip_all_tags( $d['titulo'] ) . ( $d['venta_blank'] ? ' (se abre en otra pestaña)' : '' ) );
-	return '<a class="ce-boton elementor-button ' . esc_attr( $clase ) . '" href="' . esc_url( $d['venta_url'] ) . '"' . $attr . ' aria-label="' . $aria . '"><span class="elementor-button-text">' . esc_html( $d['boton'] ) . '</span></a>';
+	return '<a class="ce-boton elementor-button ' . esc_attr( $clase ) . '" href="' . esc_url( $d['venta_url'] ) . '"' . $attr . ' aria-label="' . $aria . '"><span class="elementor-button-content-wrapper">' . ( $icono ? '<span class="ce-boton-ico">' . $icono . '</span>' : '' ) . '<span class="elementor-button-text">' . esc_html( $d['boton'] ) . '</span></span></a>';
 }
 
 /**
@@ -182,7 +190,7 @@ function caracool_eventos_render( $a = array() ) {
 			$html .= '<li class="ce-evento ce-estado-' . esc_attr( $d['estado'] ) . '" data-ce-cats="' . esc_attr( $slugs ) . '">';
 			$html .= caracool_eventos_bloque_fecha( $d, $o['anio'], $o['semana'] );
 			$html .= '<div class="ce-info">';
-			$html .= '<h3 class="ce-titulo"><a href="' . esc_url( $d['url'] ) . '">' . esc_html( wp_strip_all_tags( $principal ) ) . '</a></h3>';
+			$html .= '<' . $o['etiqueta'] . ' class="ce-titulo"><a href="' . esc_url( $d['url'] ) . '">' . esc_html( wp_strip_all_tags( $principal ) ) . '</a></' . $o['etiqueta'] . '>';
 			$meta  = array();
 			if ( $segunda ) {
 				$meta[] = '<span class="ce-lugar">' . esc_html( $segunda ) . '</span>';

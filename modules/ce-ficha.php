@@ -47,6 +47,13 @@ function caracool_eventos_opciones_ficha( $a ) {
 			't_concierto' => 'Concierto',
 			't_mas'       => 'Más fechas de la gira',
 			't_mapa'      => 'Ver mapa',
+			't_lugar'     => 'Lugar',
+			't_desde'     => 'Entradas desde',
+			't_llegar'    => 'Cómo llegar',
+			't_calendario' => 'Añadir al calendario',
+			't_compartir' => 'Compartir',
+			'etiqueta_lugar' => 'h3',
+			'etiqueta_mas'   => 'h3',
 		),
 		(array) $a,
 		'caracool_evento'
@@ -67,6 +74,8 @@ function caracool_eventos_opciones_ficha( $a ) {
 			$o[ $k ] = (string) $v;
 		}
 	}
+	$o['etiqueta_lugar'] = caracool_eventos_etiqueta( $a['etiqueta_lugar'] );
+	$o['etiqueta_mas']   = caracool_eventos_etiqueta( $a['etiqueta_mas'] );
 	return $o;
 }
 
@@ -82,6 +91,10 @@ function caracool_eventos_icono( $nombre ) {
 		'enlace'    => '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
 		'whatsapp'  => '<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 9.5c.3 2 2.5 4.2 4.5 4.5l1-1.2 1.8.8-.4 1.6c-3.4.4-7.6-3.8-7.2-7.2l1.6-.4.8 1.8z"/>',
 		'mapa'      => '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+		'hora'      => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+		'puertas'   => '<path d="M5 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M3 21h18M13.5 12h.01"/>',
+		'cuenta'    => '<path d="M6 2h12M6 22h12M7 2v4a5 5 0 0 0 10 0V2M7 22v-4a5 5 0 0 1 10 0v4"/>',
+		'flecha'    => '<path d="M6 9l6 6 6-6"/>',
 	);
 	if ( ! isset( $p[ $nombre ] ) ) {
 		return '';
@@ -130,7 +143,7 @@ function caracool_eventos_texto_horas_ficha( $d, $o ) {
  * ce-front.js lo rehace en el navegador, así una página guardada en caché no
  * dice «faltan 3 días» cuando ya es el día.
  */
-function caracool_eventos_cuenta( $d ) {
+function caracool_eventos_cuenta( $d, $icono = false ) {
 	if ( empty( $d['dt_inicio'] ) || in_array( $d['estado'], array( 'cancelado', 'aplazado' ), true ) ) {
 		return '';
 	}
@@ -142,7 +155,7 @@ function caracool_eventos_cuenta( $d ) {
 	$dia  = new DateTime( $d['dt_inicio']->format( 'Y-m-d' ), wp_timezone() );
 	$n    = (int) $hoy->diff( $dia )->format( '%r%a' );
 	$txt  = $n <= 0 ? 'Es hoy' : ( 1 === $n ? 'Es mañana' : 'Faltan ' . $n . ' días' );
-	return '<span class="ce-cuenta" data-ce-dia="' . esc_attr( $dia->format( 'Y-m-d' ) ) . '">' . esc_html( $txt ) . '</span>';
+	return '<span class="ce-cuenta" data-ce-dia="' . esc_attr( $dia->format( 'Y-m-d' ) ) . '">' . ( $icono ? caracool_eventos_icono( 'cuenta' ) : '' ) . '<span class="ce-cuenta-txt">' . esc_html( $txt ) . '</span></span>';
 }
 
 // ── Añadir al calendario ────────────────────────────────────────────────
@@ -295,7 +308,8 @@ function caracool_eventos_mas_fechas( $d, $o ) {
 	if ( ! $items ) {
 		return '';
 	}
-	return '<div class="ce-mas"><h3 class="ce-mas-titulo">' . esc_html( $o['t_mas'] ) . '</h3><ul class="ce-mas-lista">' . $items . '</ul></div>';
+	$t = $o['etiqueta_mas'];
+	return '<div class="ce-mas"><' . $t . ' class="ce-mas-titulo">' . esc_html( $o['t_mas'] ) . '</' . $t . '><ul class="ce-mas-lista">' . $items . '</ul></div>';
 }
 
 /** Etiqueta de categoría y de estado. */
@@ -387,7 +401,7 @@ function caracool_eventos_ficha_columnas( $d, $o ) {
 	}
 	$pr = caracool_eventos_texto_precio( $d );
 	if ( $pr ) {
-		$t .= '<div class="ce-tarjeta-lin">' . $ico( 'precio' ) . '<div><strong>' . esc_html( $pr ) . '</strong></div></div>';
+		$t .= '<div class="ce-tarjeta-lin">' . $ico( 'precio' ) . '<div><strong class="ce-precio-cifra">' . esc_html( $pr ) . '</strong></div></div>';
 	}
 	$b  = caracool_eventos_boton( $d );
 	$t .= $b ? '<div class="ce-ficha-accion">' . $b . '</div>' : '';
@@ -402,33 +416,87 @@ function caracool_eventos_ficha_columnas( $d, $o ) {
 	return $html . caracool_eventos_mas_fechas( $d, $o );
 }
 
+/**
+ * Calendario y compartir en botones con menú (diseño entrada). Son <details>,
+ * así que funcionan sin JavaScript; ce-front.js los cierra al pulsar fuera.
+ */
+function caracool_eventos_acciones_pildoras( $d, $o ) {
+	$ico  = function ( $n ) use ( $o ) {
+		return $o['iconos'] ? caracool_eventos_icono( $n ) : '';
+	};
+	$paso = (int) get_post_meta( $d['id'], '_ce_ts_fin', true ) < time();
+	$h    = '';
+	if ( $o['calendario'] && ! $paso && 'cancelado' !== $d['estado'] ) {
+		$h .= '<details class="ce-pildora-menu"><summary class="ce-pildora ce-accion-enlace">' . $ico( 'calendario' ) . '<span>' . esc_html( $o['t_calendario'] ) . '</span>' . caracool_eventos_icono( 'flecha' ) . '</summary><div class="ce-pildora-opciones">'
+			. '<a class="ce-accion-enlace" href="' . esc_url( caracool_eventos_url_google_calendar( $d ) ) . '" target="_blank" rel="noopener">Google Calendar</a>'
+			. '<a class="ce-accion-enlace" href="' . esc_url( caracool_eventos_url_ics( $d ) ) . '" download>Apple u Outlook (.ics)</a>'
+			. '</div></details>';
+	}
+	if ( $o['compartir'] ) {
+		$texto = wp_strip_all_tags( $d['titulo'] ) . ' ' . $d['url'];
+		$h    .= '<details class="ce-pildora-menu"><summary class="ce-pildora ce-accion-enlace">' . $ico( 'compartir' ) . '<span>' . esc_html( $o['t_compartir'] ) . '</span>' . caracool_eventos_icono( 'flecha' ) . '</summary><div class="ce-pildora-opciones">'
+			. '<a class="ce-accion-enlace" href="' . esc_url( 'https://wa.me/?text=' . rawurlencode( $texto ) ) . '" target="_blank" rel="noopener">WhatsApp</a>'
+			. '<button type="button" class="ce-accion-enlace ce-compartir-nativo" data-ce-compartir="' . esc_attr( $d['url'] ) . '" data-ce-titulo="' . esc_attr( wp_strip_all_tags( $d['titulo'] ) ) . '" hidden>Más opciones</button>'
+			. '</div></details>';
+		$h    .= '<button type="button" class="ce-pildora ce-accion-enlace" data-ce-copiar="' . esc_attr( $d['url'] ) . '">' . $ico( 'enlace' ) . '<span>Copiar enlace</span></button>';
+	}
+	return $h ? '<div class="ce-ficha-acciones ce-acciones-pildoras">' . $h . '</div>' : '';
+}
+
 function caracool_eventos_ficha_entrada( $d, $o ) {
 	$l    = $d['lugar'];
-	$h    = caracool_eventos_texto_horas_ficha( $d, $o );
+	$ico  = function ( $n ) use ( $o ) {
+		return $o['iconos'] ? caracool_eventos_icono( $n ) : '';
+	};
 	$html = caracool_eventos_chips_ficha( $d, $o );
 	$html .= '<div class="ce-entrada">';
-	$html .= '<div class="ce-entrada-fecha">' . ( $d['dt_inicio'] ? caracool_eventos_hoja( $d ) : '' ) . '</div>';
+
+	// Fecha: la hoja y, debajo, el año.
+	$html .= '<div class="ce-entrada-fecha">';
+	if ( $d['dt_inicio'] ) {
+		$html .= caracool_eventos_hoja( $d ) . '<span class="ce-entrada-anio">' . esc_html( $d['dt_inicio']->format( 'Y' ) ) . '</span>';
+	}
+	$html .= '</div>';
+
+	// Datos: lugar, horas y cuenta atrás.
 	$html .= '<div class="ce-entrada-datos">';
 	if ( $l ) {
-		$html .= '<h3 class="ce-entrada-lugar">' . esc_html( $l['nombre'] ) . '</h3>';
-		$dir   = caracool_eventos_texto_direccion( $l );
-		$html .= $dir ? '<p class="ce-entrada-dir">' . esc_html( $dir ) . ' · <a href="' . esc_url( caracool_eventos_url_mapa( $l ) ) . '" target="_blank" rel="noopener">Ver en el mapa</a></p>' : '';
+		$t     = $o['etiqueta_lugar'];
+		$dir   = implode( ' · ', array_filter( array( $l['direccion'], trim( $l['cp'] . ' ' . $l['ciudad'] ) ) ) );
+		$html .= '<div class="ce-entrada-sitio">' . $ico( 'donde' ) . '<div>'
+			. ( '' !== $o['t_lugar'] ? '<p class="ce-entrada-eyebrow">' . esc_html( $o['t_lugar'] ) . '</p>' : '' )
+			. '<' . $t . ' class="ce-entrada-lugar">' . esc_html( $l['nombre'] ) . '</' . $t . '>'
+			. ( $dir ? '<p class="ce-entrada-dir">' . esc_html( $dir ) . '</p>' : '' )
+			. '<a class="ce-entrada-mapa" href="' . esc_url( caracool_eventos_url_mapa( $l ) ) . '" target="_blank" rel="noopener">' . $ico( 'mapa' ) . '<span>' . esc_html( $o['t_llegar'] ) . '</span></a>'
+			. '</div></div>';
 	}
-	if ( $h ) {
-		$html .= '<p class="ce-entrada-horas">' . esc_html( $h ) . '</p>';
+	$chips = '';
+	if ( $o['puertas'] && '' !== (string) $d['hora_puertas'] && '' !== (string) $d['hora_inicio'] ) {
+		$chips .= '<span class="ce-hora-chip">' . $ico( 'puertas' ) . '<small>' . esc_html( $o['t_puertas'] ) . '</small><b>' . esc_html( $d['hora_puertas'] ) . '</b></span>';
 	}
+	if ( '' !== (string) $d['hora_inicio'] ) {
+		$chips .= '<span class="ce-hora-chip">' . $ico( 'hora' ) . '<small>' . esc_html( $o['t_concierto'] ) . '</small><b>' . esc_html( caracool_eventos_texto_horas( $d ) ) . '</b></span>';
+	} elseif ( $d['fin'] ) {
+		$chips .= '<span class="ce-hora-chip">' . $ico( 'cuando' ) . '<b>' . esc_html( caracool_eventos_texto_fechas( $d ) ) . '</b></span>';
+	}
+	$html .= $chips ? '<div class="ce-entrada-horas">' . $chips . '</div>' : '';
 	if ( $o['cuenta'] ) {
-		$cu    = caracool_eventos_cuenta( $d );
-		$html .= $cu ? '<p class="ce-entrada-cuenta">' . $cu . '</p>' : '';
+		$html .= caracool_eventos_cuenta( $d, $o['iconos'] );
 	}
 	$html .= '</div>';
-	$pr    = caracool_eventos_texto_precio( $d );
-	$b     = caracool_eventos_boton( $d );
+
+	// Compra: precio grande y botón.
+	$pr = caracool_eventos_texto_precio( $d );
+	$b  = caracool_eventos_boton( $d, '', $o['iconos'] ? caracool_eventos_icono( 'precio' ) : '' );
 	if ( $pr || $b ) {
-		$html .= '<div class="ce-entrada-compra">' . ( $pr ? '<span class="ce-entrada-precio">' . esc_html( $pr ) . '</span>' : '' ) . $b . '</div>';
+		$html .= '<div class="ce-entrada-compra">';
+		if ( $pr ) {
+			$html .= '<div class="ce-entrada-precio"><small>' . esc_html( $o['t_desde'] ) . '</small><b class="ce-precio-cifra">' . esc_html( trim( preg_replace( '/^Desde\s+/u', '', $pr ) ) ) . '</b></div>';
+		}
+		$html .= $b . '</div>';
 	}
 	$html .= '</div>';
-	return $html . caracool_eventos_acciones_ficha( $d, $o ) . caracool_eventos_mapa_ficha( $d, $o ) . caracool_eventos_mas_fechas( $d, $o );
+	return $html . caracool_eventos_acciones_pildoras( $d, $o ) . caracool_eventos_mapa_ficha( $d, $o ) . caracool_eventos_mas_fechas( $d, $o );
 }
 
 /**
