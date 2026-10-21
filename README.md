@@ -34,13 +34,15 @@ Con Elementor hay dos widgets:
   - **Contorno**: la caja solo con el borde.
   - **En línea**: «6 NOV» con el día de la semana debajo.
 
-  Cada diseño tiene su sección en la pestaña de estilo, con sus tamaños (por dispositivo) y sus colores. El día de la semana puede ir abreviado o entero.
+  En la pestaña de estilo, cada diseño tiene una sección para su caja (ancho, fondo, borde y esquinas). El día de la semana puede ir abreviado o entero.
 - **Ficha del evento**: fecha, lugar con enlace al mapa, estado, precio y botón. Va en la plantilla de los eventos del Maquetador de temas. Tiene tres diseños:
   - **Lista**: una fila por dato.
   - **Dos columnas**: el texto del evento a la izquierda y una tarjeta de compra a la derecha. Ya pinta el texto, así que en la plantilla no hace falta el widget de contenido.
   - **Entrada**: una banda con forma de entrada de concierto.
 
   Y estos añadidos, todos apagados por defecto: iconos, categoría como etiqueta, apertura de puertas, cuenta atrás, añadir al calendario (Google Calendar y .ics), compartir, mapa (Google Maps se carga solo al pulsar) y más fechas de la misma categoría. En Estilo cada diseño tiene su sección, y los textos de las etiquetas se pueden cambiar.
+
+En los dos widgets, cada texto tiene en Estilo los mismos controles que el Encabezado de Elementor: alineación, tipografía, trazo, sombra, modo de fusión y color en «Normal» y «Al pasar el cursor». El título del listado, el lugar de la Entrada y el título de «Más fechas» dejan elegir la etiqueta HTML, de H1 a H6, div, span o p.
 
 Sin Elementor:
 

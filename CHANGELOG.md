@@ -1,5 +1,19 @@
 # Cambios
 
+## 0.6.0, 21 de octubre de 2026
+
+- Los textos de los dos widgets tienen en Estilo los mismos controles que el Encabezado de Elementor, en el mismo orden: alineación, tipografía, trazo, sombra, modo de fusión y color en «Normal» y «Al pasar el cursor», con su duración de la transición. Cada texto tiene su sección: en el listado, título, lugar y hora, y las cuatro partes de la fecha; en la ficha, etiquetas, datos, lugar, horas, precio, cuenta atrás, enlaces, calendario y compartir, y cada parte de «Más fechas».
+- Etiqueta HTML a elegir, como en el Encabezado, para el título del listado y, en la ficha, para el lugar del diseño Entrada y el título de «Más fechas». En el shortcode: `etiqueta="h2"`, `etiqueta_lugar` y `etiqueta_mas`.
+- El título del listado ya no se subraya al pasar el cursor, como un Encabezado de Elementor con enlace. Si se quiere el subrayado, se pone en la Decoración de su tipografía. Con el teclado sigue teniendo una marca visible.
+- Las secciones de cada diseño de fecha se quedan con lo que es de la caja: ancho, fondo, borde y esquinas. Los tamaños y colores de los textos pasan a las secciones de texto. Los ajustes ya hechos con los nombres de antes (tipografía y color del título, de lugar y hora, de la fecha) se conservan.
+- Nuevo diseño Entrada de la ficha:
+  - El lugar lleva icono, antetítulo, dirección y un botón «Cómo llegar».
+  - Las horas van en píldoras: «Puertas» y «Concierto».
+  - La cuenta atrás va en una etiqueta de color, el precio en grande con «Entradas desde» encima y el año debajo de la hoja.
+  - Calendario y compartir pasan a botones redondeados con menú. Funcionan sin JavaScript y se cierran al pulsar fuera o con Escape.
+  - La entrada se adapta al ancho que le deja la página: en una columna estrecha la compra baja, y en muy estrecha todo se apila.
+- El botón de compra puede llevar icono (en el diseño Entrada, con los iconos encendidos).
+
 ## 0.5.0, 21 de octubre de 2026
 
 - La ficha del evento tiene tres diseños. Lista es la de siempre. Dos columnas pone el texto del evento a la izquierda y una tarjeta de compra a la derecha. Entrada es una banda con forma de entrada de concierto. Se elige en el widget, en «Diseño de la ficha», o con `diseno="columnas"` en el shortcode.

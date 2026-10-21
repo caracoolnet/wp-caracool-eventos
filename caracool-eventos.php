@@ -3,7 +3,7 @@
  * Plugin Name:  Caracool Eventos
  * Plugin URI:   https://github.com/caracoolnet/wp-caracool-eventos
  * Description:  Conciertos y eventos con fecha, hora, lugar y enlace de venta. Se agrupan por categorías (giras, tipos), el listado esconde solos los que ya han pasado y cada evento lleva los datos estructurados que pide Google.
- * Version:      0.5.0
+ * Version:      0.6.0
  * Author:       Caracool
  * Author URI:   https://caracool.net
  * License:      GPL-2.0-or-later
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARACOOL_EVENTOS_VERSION', '0.5.0' );
+define( 'CARACOOL_EVENTOS_VERSION', '0.6.0' );
 define( 'CARACOOL_EVENTOS_FILE', __FILE__ );
 define( 'CARACOOL_EVENTOS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARACOOL_EVENTOS_URL', plugin_dir_url( __FILE__ ) );
@@ -272,6 +272,7 @@ class Caracool_Eventos {
 							<tr><td><code>pasados="solo"</code></td><td>Enseña solo los que ya han pasado, del más reciente al más antiguo. Sirve para un histórico.</td></tr>
 							<tr><td><code>vacio="Pronto, nuevas fechas"</code></td><td>Texto cuando no hay eventos que enseñar.</td></tr>
 							<tr><td><code>anio="si"</code></td><td>Enseña el año debajo del mes.</td></tr>
+							<tr><td><code>etiqueta="h2"</code></td><td>Etiqueta HTML del título: de <code>h1</code> a <code>h6</code>, <code>div</code>, <code>span</code> o <code>p</code>. Por defecto, <code>h3</code>.</td></tr>
 							<tr><td><code>fecha="calendario"</code></td><td>Diseño de la fecha: <code>clasico</code> (el de siempre), <code>calendario</code>, <code>bloque</code>, <code>contorno</code> o <code>linea</code>.</td></tr>
 							<tr><td><code>semana="completo"</code></td><td>Día de la semana entero («viernes») o abreviado («vie», con <code>corto</code>). Si no se pone, el calendario lo lleva entero y el resto, abreviado.</td></tr>
 						</tbody>
@@ -293,6 +294,7 @@ class Caracool_Eventos {
 							<tr><td><code>mapa="si"</code></td><td>Botón «Ver mapa». Google Maps solo se carga al pulsarlo.</td></tr>
 							<tr><td><code>mas="si" mas_limite="3"</code></td><td>Las próximas fechas de la misma categoría.</td></tr>
 							<tr><td><code>categoria="si"</code></td><td>La categoría como etiqueta.</td></tr>
+							<tr><td><code>etiqueta_lugar="h2" etiqueta_mas="h4"</code></td><td>Etiqueta HTML del lugar (diseño Entrada) y del título de «Más fechas». Por defecto, <code>h3</code>.</td></tr>
 						</tbody>
 					</table>
 				</div>
