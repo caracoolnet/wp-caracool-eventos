@@ -3,7 +3,7 @@
  * Plugin Name:  Caracool Eventos
  * Plugin URI:   https://github.com/caracoolnet/wp-caracool-eventos
  * Description:  Conciertos y eventos con fecha, hora, lugar y enlace de venta. Se agrupan por categorías (giras, tipos), el listado esconde solos los que ya han pasado y cada evento lleva los datos estructurados que pide Google.
- * Version:      0.3.0
+ * Version:      0.4.0
  * Author:       Caracool
  * Author URI:   https://caracool.net
  * License:      GPL-2.0-or-later
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARACOOL_EVENTOS_VERSION', '0.3.0' );
+define( 'CARACOOL_EVENTOS_VERSION', '0.4.0' );
 define( 'CARACOOL_EVENTOS_FILE', __FILE__ );
 define( 'CARACOOL_EVENTOS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARACOOL_EVENTOS_URL', plugin_dir_url( __FILE__ ) );
@@ -271,6 +271,9 @@ class Caracool_Eventos {
 							<tr><td><code>limite="6"</code></td><td>Cuántos eventos enseñar. Por defecto, todos.</td></tr>
 							<tr><td><code>pasados="solo"</code></td><td>Enseña solo los que ya han pasado, del más reciente al más antiguo. Sirve para un histórico.</td></tr>
 							<tr><td><code>vacio="Pronto, nuevas fechas"</code></td><td>Texto cuando no hay eventos que enseñar.</td></tr>
+							<tr><td><code>anio="si"</code></td><td>Enseña el año debajo del mes.</td></tr>
+							<tr><td><code>fecha="calendario"</code></td><td>Diseño de la fecha: <code>clasico</code> (el de siempre), <code>calendario</code>, <code>bloque</code>, <code>contorno</code> o <code>linea</code>.</td></tr>
+							<tr><td><code>semana="completo"</code></td><td>Día de la semana entero («viernes») o abreviado («vie», con <code>corto</code>). Si no se pone, el calendario lo lleva entero y el resto, abreviado.</td></tr>
 						</tbody>
 					</table>
 				</div>

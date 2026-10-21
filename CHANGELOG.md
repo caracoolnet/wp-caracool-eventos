@@ -1,5 +1,14 @@
 # Cambios
 
+## 0.4.0, 21 de octubre de 2026
+
+- La fecha del listado tiene cinco diseños: Clásico (el de siempre), Calendario, Bloque de color, Contorno y En línea. Se elige en el widget, en «Diseño de la fecha», o con `fecha="calendario"` en el shortcode.
+- Cada diseño tiene su sección en la pestaña Estilo del widget, con sus tamaños y colores. Los tamaños se pueden cambiar por dispositivo.
+- El día de la semana puede ir abreviado («vie») o entero («viernes»). El Calendario lo pone entero si no se dice otra cosa. En el shortcode es `semana="corto"` o `semana="completo"`.
+- En el Clásico, el tamaño del mes se puede poner a mano. Mientras no se haga, sigue tomando el ancho del número.
+- En los diseños con caja, un número que no cabe (como «10–12») se reduce hasta caber.
+- El widget recién puesto sigue saliendo en Clásico, así que las webs que ya lo usan no cambian al actualizar.
+
 ## 0.3.0, 20 de octubre de 2026
 
 - Nueva fecha en el listado: el día de la semana pequeño arriba, el número grande y el mes debajo, al mismo ancho que el número. El ancho lo ajusta `ce-front.js`; con un solo dígito el mes toma el ancho de dos, y un «10–12» se reduce hasta caber en su columna.

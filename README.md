@@ -27,7 +27,14 @@ Los eventos se crean y editan en el menú **Eventos**, con el editor clásico pa
 
 Con Elementor hay dos widgets:
 
-- **Eventos**: el listado, con categorías, próximos o histórico, cuántos, filtro, qué se lee primero (título o ciudad) y si se enseña el año. La fecha va en bloque: día de la semana, número y mes al ancho del número. Colores y tipografías en la pestaña de estilo.
+- **Eventos**: el listado. Se elige qué categorías salen, si son los próximos o el histórico y cuántos. También si lleva filtro, qué se lee primero (el título o la ciudad), si se enseña el año y el diseño de la fecha:
+  - **Clásico**: el día de la semana arriba, el número grande y el mes debajo, al ancho del número.
+  - **Calendario**: una hoja con el día de la semana en una franja arriba.
+  - **Bloque de color**: un cuadrado relleno.
+  - **Contorno**: la caja solo con el borde.
+  - **En línea**: «6 NOV» con el día de la semana debajo.
+
+  Cada diseño tiene su sección en la pestaña de estilo, con sus tamaños (por dispositivo) y sus colores. El día de la semana puede ir abreviado o entero.
 - **Ficha del evento**: fecha, lugar con enlace al mapa, estado, precio y botón. Para la plantilla de entrada de los eventos en el Maquetador de temas.
 
 Sin Elementor:
@@ -36,6 +43,7 @@ Sin Elementor:
 [caracool_eventos]
 [caracool_eventos categoria="gira-ellar" limite="6" filtro="no"]
 [caracool_eventos pasados="solo" anio="si" vacio="Aún no hay histórico"]
+[caracool_eventos fecha="calendario" semana="completo"]
 [caracool_evento]
 ```
 
