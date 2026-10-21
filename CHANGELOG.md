@@ -1,5 +1,16 @@
 # Cambios
 
+## 0.5.0, 21 de octubre de 2026
+
+- La ficha del evento tiene tres diseños. Lista es la de siempre. Dos columnas pone el texto del evento a la izquierda y una tarjeta de compra a la derecha. Entrada es una banda con forma de entrada de concierto. Se elige en el widget, en «Diseño de la ficha», o con `diseno="columnas"` en el shortcode.
+- Nuevo campo en el evento: apertura de puertas. Sale en la ficha como «Puertas 21:00 · Concierto 22:00» y llega a Google como `doorTime`. El importador lo toma del campo `puertas`.
+- Añadidos para la ficha, cada uno con su interruptor y apagados por defecto: iconos, categoría como etiqueta, apertura de puertas, cuenta atrás, añadir al calendario (Google Calendar y archivo .ics), compartir (WhatsApp, copiar enlace y el menú del móvil), mapa y más fechas de la misma categoría.
+- El mapa de Google solo se carga cuando se pulsa «Ver mapa». Al abrir la página no se carga nada de Google.
+- La cuenta atrás se calcula en el navegador, así que una página guardada en caché no se queda con los días de cuando se guardó.
+- El widget «Ficha del evento» tiene en Estilo una sección por diseño (tarjeta, entrada, hoja de calendario, mapa y más fechas) y los textos de las etiquetas se pueden cambiar.
+- Si la plantilla ya pinta la ficha con el widget, el texto del evento no la repite.
+- Con todo apagado, la ficha se ve como en la 0.4.0.
+
 ## 0.4.0, 21 de octubre de 2026
 
 - La fecha del listado tiene cinco diseños: Clásico (el de siempre), Calendario, Bloque de color, Contorno y En línea. Se elige en el widget, en «Diseño de la fecha», o con `fecha="calendario"` en el shortcode.

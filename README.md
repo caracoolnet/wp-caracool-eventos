@@ -6,7 +6,7 @@ Es uno de los plugins de la casa de Caracool: se cuelga del menú «Caracool» y
 
 ## Qué tiene un evento
 
-- **Fechas.** Día de inicio, hora de inicio y hora de fin, las dos opcionales. Si no hay hora, no se enseña ninguna. Un evento puede durar varios días.
+- **Fechas.** Día de inicio, hora de inicio, hora de fin y apertura de puertas. Las horas son opcionales: si no hay, no se enseña ninguna. Un evento puede durar varios días.
 - **Lugar.** Se elige de la lista o se crea en el momento desde el propio evento. Los lugares se ven y se editan en Eventos → Lugares, con su dirección, código postal, ciudad, provincia, país y web.
 - **Categorías.** Giras, tipos de evento o lo que haga falta. Son jerárquicas y sirven para filtrar el listado.
 - **Estado.** Programado, últimas entradas, agotado, aplazado, nueva fecha o cancelado. Agotado y cancelado se enseñan en lugar del botón de compra.
@@ -35,7 +35,12 @@ Con Elementor hay dos widgets:
   - **En línea**: «6 NOV» con el día de la semana debajo.
 
   Cada diseño tiene su sección en la pestaña de estilo, con sus tamaños (por dispositivo) y sus colores. El día de la semana puede ir abreviado o entero.
-- **Ficha del evento**: fecha, lugar con enlace al mapa, estado, precio y botón. Para la plantilla de entrada de los eventos en el Maquetador de temas.
+- **Ficha del evento**: fecha, lugar con enlace al mapa, estado, precio y botón. Va en la plantilla de los eventos del Maquetador de temas. Tiene tres diseños:
+  - **Lista**: una fila por dato.
+  - **Dos columnas**: el texto del evento a la izquierda y una tarjeta de compra a la derecha. Ya pinta el texto, así que en la plantilla no hace falta el widget de contenido.
+  - **Entrada**: una banda con forma de entrada de concierto.
+
+  Y estos añadidos, todos apagados por defecto: iconos, categoría como etiqueta, apertura de puertas, cuenta atrás, añadir al calendario (Google Calendar y .ics), compartir, mapa (Google Maps se carga solo al pulsar) y más fechas de la misma categoría. En Estilo cada diseño tiene su sección, y los textos de las etiquetas se pueden cambiar.
 
 Sin Elementor:
 
@@ -45,11 +50,12 @@ Sin Elementor:
 [caracool_eventos pasados="solo" anio="si" vacio="Aún no hay histórico"]
 [caracool_eventos fecha="calendario" semana="completo"]
 [caracool_evento]
+[caracool_evento diseno="entrada" puertas="si" cuenta="si" mas="si"]
 ```
 
 Los botones llevan la clase `elementor-button`, así que toman el estilo de botón del Kit sin tocar nada. El resto hereda la tipografía y el color del contenedor.
 
-Si la página de un evento no está hecha con Elementor, la ficha aparece sola delante del texto.
+Si la página de un evento no está hecha con Elementor, la ficha aparece sola delante del texto. Si la plantilla ya lleva el widget de la ficha, el texto no la repite.
 
 ## Cuándo deja de salir un evento
 
@@ -74,11 +80,12 @@ modules/ce-tipos.php      tipo de contenido, categorías, lugares, fechas y cons
 modules/ce-lugares.php    dirección de cada lugar
 modules/ce-datos.php      caja «Datos del evento»
 modules/ce-schema.php     JSON-LD
-modules/ce-listado.php    listado, ficha y shortcodes
+modules/ce-listado.php    listado y su shortcode
+modules/ce-ficha.php      ficha del evento, su shortcode y el archivo .ics
 modules/ce-widget.php     widgets de Elementor
 modules/ce-importar.php   importación desde JSON
 assets/ce-front.css       estilos del listado y la ficha
 assets/ce-front.js        ancho del mes y filtro por categoría
 ```
 
-Datos de cada evento (post meta): `_ce_inicio`, `_ce_hora_inicio`, `_ce_fin`, `_ce_hora_fin`, `_ce_estado`, `_ce_venta_url`, `_ce_venta_blank`, `_ce_boton`, `_ce_precio`, `_ce_artista`. Las consultas usan dos marcas de tiempo calculadas, `_ce_ts_inicio` y `_ce_ts_fin`. Todos están en la API REST.
+Datos de cada evento (post meta): `_ce_inicio`, `_ce_hora_inicio`, `_ce_fin`, `_ce_hora_fin`, `_ce_hora_puertas`, `_ce_estado`, `_ce_venta_url`, `_ce_venta_blank`, `_ce_boton`, `_ce_precio`, `_ce_artista`. Las consultas usan dos marcas de tiempo calculadas, `_ce_ts_inicio` y `_ce_ts_fin`. Todos están en la API REST.

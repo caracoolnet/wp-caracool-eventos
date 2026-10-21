@@ -3,7 +3,7 @@
  * Plugin Name:  Caracool Eventos
  * Plugin URI:   https://github.com/caracoolnet/wp-caracool-eventos
  * Description:  Conciertos y eventos con fecha, hora, lugar y enlace de venta. Se agrupan por categorías (giras, tipos), el listado esconde solos los que ya han pasado y cada evento lleva los datos estructurados que pide Google.
- * Version:      0.4.0
+ * Version:      0.5.0
  * Author:       Caracool
  * Author URI:   https://caracool.net
  * License:      GPL-2.0-or-later
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARACOOL_EVENTOS_VERSION', '0.4.0' );
+define( 'CARACOOL_EVENTOS_VERSION', '0.5.0' );
 define( 'CARACOOL_EVENTOS_FILE', __FILE__ );
 define( 'CARACOOL_EVENTOS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARACOOL_EVENTOS_URL', plugin_dir_url( __FILE__ ) );
@@ -278,6 +278,25 @@ class Caracool_Eventos {
 					</table>
 				</div>
 				<div class="ce-card">
+					<div class="ce-card-head"><div class="ce-card-icon"><?php echo self::icono( 'uso' ); // phpcs:ignore ?></div><h2>La ficha de cada evento</h2></div>
+					<p class="ce-card-desc">Con Elementor, pon el widget <strong>Ficha del evento</strong> en la plantilla de los eventos del Maquetador de temas. Sin Elementor, la ficha sale sola delante del texto, o donde pongas este código:</p>
+					<p><code class="ce-code">[caracool_evento]</code></p>
+					<table class="ce-tabla">
+						<thead><tr><th>Opción</th><th>Qué hace</th></tr></thead>
+						<tbody>
+							<tr><td><code>diseno="columnas"</code></td><td>Diseño: <code>lista</code> (el de siempre), <code>columnas</code> (texto a la izquierda y tarjeta de compra a la derecha) o <code>entrada</code> (banda con forma de entrada).</td></tr>
+							<tr><td><code>iconos="si"</code></td><td>Iconos junto a cada dato.</td></tr>
+							<tr><td><code>puertas="si"</code></td><td>Enseña la apertura de puertas, si el evento la tiene.</td></tr>
+							<tr><td><code>cuenta="si"</code></td><td>Cuenta atrás: «Faltan 16 días», «Es mañana», «Es hoy».</td></tr>
+							<tr><td><code>calendario="si"</code></td><td>Enlaces para añadir el evento a Google Calendar o descargar el .ics.</td></tr>
+							<tr><td><code>compartir="si"</code></td><td>WhatsApp, copiar enlace y el menú de compartir del móvil.</td></tr>
+							<tr><td><code>mapa="si"</code></td><td>Botón «Ver mapa». Google Maps solo se carga al pulsarlo.</td></tr>
+							<tr><td><code>mas="si" mas_limite="3"</code></td><td>Las próximas fechas de la misma categoría.</td></tr>
+							<tr><td><code>categoria="si"</code></td><td>La categoría como etiqueta.</td></tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="ce-card">
 					<div class="ce-card-head"><div class="ce-card-icon"><?php echo self::icono( 'reloj' ); // phpcs:ignore ?></div><h2>Cuándo deja de salir un evento</h2></div>
 					<p class="ce-card-desc">Un evento sale del listado cuando termina: a su hora de fin si la tiene y, si no, al acabar su último día. Su página sigue publicada y sus datos siguen valiendo para el histórico.</p>
 				</div>
@@ -507,7 +526,7 @@ class Caracool_Eventos {
 new Caracool_Eventos();
 
 // ── Módulos ─────────────────────────────────────────────────────────────
-foreach ( array( 'ce-tipos.php', 'ce-lugares.php', 'ce-datos.php', 'ce-schema.php', 'ce-listado.php', 'ce-importar.php' ) as $modulo ) {
+foreach ( array( 'ce-tipos.php', 'ce-lugares.php', 'ce-datos.php', 'ce-schema.php', 'ce-listado.php', 'ce-ficha.php', 'ce-importar.php' ) as $modulo ) {
 	$ruta = CARACOOL_EVENTOS_DIR . 'modules/' . $modulo;
 	if ( file_exists( $ruta ) ) {
 		require_once $ruta;
