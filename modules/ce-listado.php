@@ -40,6 +40,8 @@ function caracool_eventos_opciones( $a ) {
 			'vacio'     => 'No hay fechas a la vista. Vuelve pronto.',
 			'datos'     => '',
 			'anio'      => 'no',
+			'fecha'     => 'clasico',
+			'semana'    => '',
 		),
 		(array) $a,
 		'caracool_eventos'
@@ -47,7 +49,11 @@ function caracool_eventos_opciones( $a ) {
 	$si = function ( $v ) {
 		return in_array( strtolower( (string) $v ), array( 'si', 'sí', 'yes', '1', 'true', 'on' ), true );
 	};
+	$fecha  = in_array( $a['fecha'], caracool_eventos_disenos_fecha(), true ) ? $a['fecha'] : 'clasico';
+	$semana = in_array( $a['semana'], array( 'corto', 'completo' ), true ) ? $a['semana'] : ( 'calendario' === $fecha ? 'completo' : 'corto' );
 	return array(
+		'fecha'     => $fecha,
+		'semana'    => $semana,
 		'categoria' => (string) $a['categoria'],
 		'filtro'    => $si( $a['filtro'] ),
 		'limite'    => (int) $a['limite'],
@@ -57,6 +63,14 @@ function caracool_eventos_opciones( $a ) {
 		'anio'      => $si( $a['anio'] ),
 		'datos'     => '' === $a['datos'] ? (bool) Caracool_Eventos::ajuste( 'schema_lista' ) : $si( $a['datos'] ),
 	);
+}
+
+/**
+ * Diseños del bloque de fecha. Todos usan el mismo marcado; cambia la clase
+ * ce-f-<diseño> de la raíz del listado y, con ella, el CSS.
+ */
+function caracool_eventos_disenos_fecha() {
+	return array( 'clasico', 'calendario', 'bloque', 'contorno', 'linea' );
 }
 
 /** Enlace de compra o de más información, con el estilo de botón del Kit. */
@@ -73,11 +87,12 @@ function caracool_eventos_boton( $d, $clase = '' ) {
 }
 
 /**
- * El bloque de fecha del listado: día de la semana pequeño, número grande y
- * mes debajo, al ancho del número (lo ajusta assets/ce-front.js). El año solo
- * se ve si se pide; para lectores de pantalla va siempre la fecha completa.
+ * El bloque de fecha del listado: día de la semana, número y mes. Cómo se ve
+ * depende del diseño elegido (ce-front.css); en el clásico, el mes va al ancho
+ * del número (lo ajusta assets/ce-front.js). El año solo se ve si se pide;
+ * para lectores de pantalla va siempre la fecha completa.
  */
-function caracool_eventos_bloque_fecha( $d, $anio = false ) {
+function caracool_eventos_bloque_fecha( $d, $anio = false, $semana = 'corto' ) {
 	$a   = $d['dt_inicio'];
 	$ts  = $a->getTimestamp();
 	$dia = wp_date( 'j', $ts );
@@ -94,7 +109,7 @@ function caracool_eventos_bloque_fecha( $d, $anio = false ) {
 		}
 		$txt .= ' al ' . wp_date( 'l j \d\e F \d\e Y', $tb );
 	}
-	$sem = rtrim( wp_date( 'D', $ts ), '.' );
+	$sem = 'completo' === $semana ? wp_date( 'l', $ts ) : rtrim( wp_date( 'D', $ts ), '.' );
 	return '<time class="ce-fecha" datetime="' . esc_attr( $a->format( 'Y-m-d' ) ) . '">'
 		. '<span class="ce-fecha-caja" aria-hidden="true">'
 		. '<span class="ce-semana">' . esc_html( $sem ) . '</span>'
@@ -133,7 +148,7 @@ function caracool_eventos_render( $a = array() ) {
 	// El script ajusta el ancho del mes y lleva el filtro por categoría.
 	wp_enqueue_script( 'caracool-eventos' );
 	$uid  = 'ce-' . wp_unique_id();
-	$html = '<div class="ce-listado ce-destaca-' . esc_attr( $o['destacar'] ) . ( 'solo' === $o['pasados'] ? ' ce-pasados' : '' ) . '" id="' . esc_attr( $uid ) . '" data-ce-listado>';
+	$html = '<div class="ce-listado ce-f-' . esc_attr( $o['fecha'] ) . ' ce-destaca-' . esc_attr( $o['destacar'] ) . ( 'solo' === $o['pasados'] ? ' ce-pasados' : '' ) . '" id="' . esc_attr( $uid ) . '" data-ce-listado>';
 
 	if ( $o['filtro'] && count( $cats ) > 1 ) {
 		asort( $cats );
@@ -166,7 +181,7 @@ function caracool_eventos_render( $a = array() ) {
 			}
 
 			$html .= '<li class="ce-evento ce-estado-' . esc_attr( $d['estado'] ) . '" data-ce-cats="' . esc_attr( $slugs ) . '">';
-			$html .= caracool_eventos_bloque_fecha( $d, $o['anio'] );
+			$html .= caracool_eventos_bloque_fecha( $d, $o['anio'], $o['semana'] );
 			$html .= '<div class="ce-info">';
 			$html .= '<h3 class="ce-titulo"><a href="' . esc_url( $d['url'] ) . '">' . esc_html( wp_strip_all_tags( $principal ) ) . '</a></h3>';
 			$meta  = array();
