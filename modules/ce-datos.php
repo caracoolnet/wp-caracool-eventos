@@ -79,8 +79,9 @@ function caracool_eventos_caja( $post ) {
 						<div><label for="ce_inicio">Empieza</label><input type="date" id="ce_inicio" name="ce_datos[_ce_inicio]" value="<?php echo esc_attr( $ini ); ?>"></div>
 						<div><label for="ce_hora_inicio">Hora</label><input type="time" id="ce_hora_inicio" name="ce_datos[_ce_hora_inicio]" value="<?php echo esc_attr( $v( '_ce_hora_inicio' ) ); ?>"></div>
 						<div><label for="ce_hora_fin">Hora de fin</label><input type="time" id="ce_hora_fin" name="ce_datos[_ce_hora_fin]" value="<?php echo esc_attr( $v( '_ce_hora_fin' ) ); ?>"></div>
+						<div><label for="ce_hora_puertas">Apertura de puertas</label><input type="time" id="ce_hora_puertas" name="ce_datos[_ce_hora_puertas]" value="<?php echo esc_attr( $v( '_ce_hora_puertas' ) ); ?>"></div>
 					</div>
-					<span class="ce-hint">Si dejas la hora vacía, no se muestra ninguna. La hora de fin es opcional.</span>
+					<span class="ce-hint">Si dejas la hora vacía, no se muestra ninguna. La hora de fin y la apertura de puertas son opcionales.</span>
 					<div class="ce-campo-sw" style="display:flex;gap:12px;align-items:center;margin-top:12px">
 						<label class="ce-sw"><input type="checkbox" id="ce_varios" <?php checked( $varios ); ?>><span></span></label>
 						<label for="ce_varios" style="font-size:13px;font-weight:560">Dura varios días</label>
@@ -217,7 +218,7 @@ function caracool_eventos_guardar_datos( $post_id, $in ) {
 	if ( array_key_exists( '_ce_fin', $in ) ) {
 		$limpio['_ce_fin'] = $fecha( $in['_ce_fin'] );
 	}
-	foreach ( array( '_ce_hora_inicio', '_ce_hora_fin' ) as $k ) {
+	foreach ( array( '_ce_hora_inicio', '_ce_hora_fin', '_ce_hora_puertas' ) as $k ) {
 		if ( array_key_exists( $k, $in ) ) {
 			$limpio[ $k ] = $hora( $in[ $k ] );
 		}

@@ -14,6 +14,7 @@
  *   hora | hora_inicio    HH:MM
  *   fin                   AAAA-MM-DD (si trae hora, se ignora)
  *   hora_fin              HH:MM
+ *   puertas               HH:MM, apertura de puertas
  *   ocultar_hora          true para no dar hora
  *   lugar                 nombre del lugar (se crea si no existe)
  *   direccion, cp, ciudad, provincia, pais   dirección del lugar
@@ -163,6 +164,7 @@ function caracool_eventos_importar( $lista, $op = array() ) {
 				'_ce_hora_inicio' => $hora,
 				'_ce_fin'         => preg_match( '/^\d{4}-\d{2}-\d{2}$/', $fin_dia ) && $fin_dia > $fecha ? $fin_dia : '',
 				'_ce_hora_fin'    => $hfin,
+				'_ce_hora_puertas' => $ocultar ? '' : (string) $val( $e, array( 'puertas', 'hora_puertas' ) ),
 				'_ce_estado'      => (string) $val( $e, 'estado', 'programado' ),
 				'_ce_venta_url'   => $entradas,
 				'_ce_boton'       => (string) $val( $e, array( 'entradas_texto', 'boton' ) ),

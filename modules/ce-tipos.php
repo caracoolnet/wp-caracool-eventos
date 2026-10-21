@@ -20,6 +20,7 @@ function caracool_eventos_campos() {
 		'_ce_hora_inicio' => 'string', // H:i o vacío
 		'_ce_fin'         => 'string', // Y-m-d o vacío
 		'_ce_hora_fin'    => 'string', // H:i o vacío
+		'_ce_hora_puertas' => 'string', // H:i o vacío: apertura de puertas
 		'_ce_estado'      => 'string',
 		'_ce_venta_url'   => 'string',
 		'_ce_venta_blank' => 'string', // '1' o '0'
@@ -328,6 +329,7 @@ function caracool_eventos_datos( $post ) {
 		'hora_inicio' => $hini,
 		'fin'         => $fin,
 		'hora_fin'    => $hfin,
+		'hora_puertas' => (string) get_post_meta( $id, '_ce_hora_puertas', true ),
 		'dt_inicio'   => caracool_eventos_dt( $ini, $hini ),
 		'dt_fin'      => $fin ? caracool_eventos_dt( $fin, $hfin, true ) : ( $hfin ? caracool_eventos_dt( $ini, $hfin ) : null ),
 		'estado'      => $estado,

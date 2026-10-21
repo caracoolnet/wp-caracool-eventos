@@ -1,11 +1,10 @@
 <?php
 /**
- * Caracool Eventos · listado y ficha.
+ * Caracool Eventos · listado.
  *
  *   [caracool_eventos]  listado con filtro por categoría (también como widget
  *                       de Elementor, «Eventos»). anio="si" enseña el año.
- *   [caracool_evento]   ficha del evento actual: fechas, lugar, estado, precio
- *                       y botón de compra. Para plantillas de Elementor Pro.
+ *   La ficha de cada evento ([caracool_evento]) está en ce-ficha.php.
  *
  * Los botones llevan la clase `elementor-button`, así que toman el estilo de
  * botón del Kit de la web sin tocar nada. El resto del diseño hereda la
@@ -218,78 +217,6 @@ add_shortcode(
 	function ( $a ) {
 		return caracool_eventos_render( $a );
 	}
-);
-
-/** Ficha del evento: para la página de cada evento. */
-function caracool_eventos_ficha( $id = 0 ) {
-	$d = caracool_eventos_datos( $id ? $id : get_the_ID() );
-	if ( ! $d ) {
-		return '';
-	}
-	wp_enqueue_style( 'caracool-eventos' );
-	$filas = array();
-	if ( $d['dt_inicio'] ) {
-		$t = caracool_eventos_texto_fechas( $d );
-		$h = caracool_eventos_texto_horas( $d );
-		$filas[] = array( 'Cuándo', ucfirst( wp_date( 'l', $d['dt_inicio']->getTimestamp() ) ) . ', ' . $t . ( $h ? '. ' . $h : '' ) );
-	}
-	if ( $d['lugar'] ) {
-		$l     = $d['lugar'];
-		$dir   = implode( ', ', array_filter( array( $l['direccion'], trim( $l['cp'] . ' ' . $l['ciudad'] ) ) ) );
-		$mapa  = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( $l['nombre'] . ', ' . $dir );
-		$valor = '<strong>' . esc_html( $l['nombre'] ) . '</strong>' . ( $dir ? '<br>' . esc_html( $dir ) : '' ) . '<br><a href="' . esc_url( $mapa ) . '" target="_blank" rel="noopener">Ver en el mapa</a>';
-		$filas[] = array( 'Dónde', $valor, true );
-	}
-	if ( 'programado' !== $d['estado'] ) {
-		$filas[] = array( 'Estado', $d['estado_txt'] );
-	}
-	if ( '' !== (string) $d['precio'] && ! in_array( $d['estado'], array( 'agotado', 'cancelado' ), true ) ) {
-		$precio  = number_format_i18n( (float) $d['precio'], floor( (float) $d['precio'] ) == (float) $d['precio'] ? 0 : 2 ); // phpcs:ignore Universal.Operators.StrictComparisons
-		$filas[] = array( 'Precio', 'Desde ' . $precio . ' ' . ( 'EUR' === $d['moneda'] ? '€' : $d['moneda'] ) );
-	}
-	$html = '<div class="ce-ficha ce-estado-' . esc_attr( $d['estado'] ) . '"><dl>';
-	foreach ( $filas as $f ) {
-		$html .= '<div class="ce-ficha-fila"><dt>' . esc_html( $f[0] ) . '</dt><dd>' . ( empty( $f[2] ) ? esc_html( $f[1] ) : $f[1] ) . '</dd></div>';
-	}
-	$html .= '</dl>';
-	$b     = caracool_eventos_boton( $d );
-	if ( $b ) {
-		$html .= '<div class="ce-ficha-accion">' . $b . '</div>';
-	}
-	return $html . '</div>';
-}
-
-add_shortcode(
-	'caracool_evento',
-	function ( $a ) {
-		$a = shortcode_atts( array( 'id' => 0 ), $a, 'caracool_evento' );
-		return caracool_eventos_ficha( (int) $a['id'] );
-	}
-);
-
-/*
- * En la página de un evento que no se ha montado con Elementor ni lleva ya la
- * ficha, la ficha va delante del texto. Con una plantilla de Elementor Pro se
- * coloca donde se quiera con el shortcode [caracool_evento].
- */
-add_filter(
-	'the_content',
-	function ( $c ) {
-		if ( ! is_singular( 'cc_evento' ) || ! in_the_loop() || ! is_main_query() ) {
-			return $c;
-		}
-		if ( has_shortcode( $c, 'caracool_evento' ) || false !== strpos( $c, 'ce-ficha' ) ) {
-			return $c;
-		}
-		if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->documents ) {
-			$doc = \Elementor\Plugin::$instance->documents->get( get_the_ID() );
-			if ( $doc && $doc->is_built_with_elementor() ) {
-				return $c;
-			}
-		}
-		return caracool_eventos_ficha() . $c;
-	},
-	8
 );
 
 // ── Widget de Elementor ────────────────────────────────────────────────

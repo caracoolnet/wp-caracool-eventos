@@ -50,6 +50,10 @@ function caracool_eventos_schema( $d ) {
 		'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
 	);
 
+	if ( '' !== (string) $d['hora_puertas'] ) {
+		$e['doorTime'] = caracool_eventos_iso( $d['inicio'], $d['hora_puertas'] );
+	}
+
 	if ( $d['fin'] ) {
 		$e['endDate'] = caracool_eventos_iso( $d['fin'], $d['hora_fin'] );
 	} elseif ( '' !== (string) $d['hora_fin'] && '' !== (string) $d['hora_inicio'] ) {
