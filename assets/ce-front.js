@@ -95,7 +95,8 @@
 		var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
 		var n = Math.round((dia - hoy) / 864e5);
 		if (n < 0) { el.hidden = true; return; }
-		el.textContent = n === 0 ? 'Es hoy' : (n === 1 ? 'Es mañana' : 'Faltan ' + n + ' días');
+		var t = el.querySelector('.ce-cuenta-txt') || el;
+		t.textContent = n === 0 ? 'Es hoy' : (n === 1 ? 'Es mañana' : 'Faltan ' + n + ' días');
 	}
 
 	function iniciarFicha(f) {
@@ -136,6 +137,21 @@
 			});
 		});
 	}
+
+	// Los menús de calendario y compartir se cierran al pulsar fuera o con Escape.
+	document.addEventListener('click', function (e) {
+		document.querySelectorAll('.ce-pildora-menu[open]').forEach(function (d) {
+			if (!d.contains(e.target)) { d.removeAttribute('open'); }
+		});
+	});
+	document.addEventListener('keydown', function (e) {
+		if (e.key !== 'Escape') { return; }
+		document.querySelectorAll('.ce-pildora-menu[open]').forEach(function (d) {
+			d.removeAttribute('open');
+			var s = d.querySelector('summary');
+			if (s) { s.focus(); }
+		});
+	});
 
 	function todos() {
 		document.querySelectorAll('[data-ce-listado]').forEach(iniciar);
