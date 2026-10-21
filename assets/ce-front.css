@@ -135,11 +135,112 @@
 	.ce-accion { grid-column: 2; justify-self: start; margin-top: .4em; }
 }
 
-/* Ficha del evento */
-.ce-ficha { margin: 0 0 1.8em; }
-.ce-ficha dl { margin: 0; display: grid; gap: 0; border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
-.ce-ficha-fila { display: grid; grid-template-columns: 8em minmax(0, 1fr); gap: 1em; padding: .9em 0; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
-.ce-ficha dt { font-weight: 600; margin: 0; }
+/*
+ * Ficha del evento. Tres diseños (ce-ficha-lista, -columnas, -entrada) y los
+ * añadidos. Como en el listado, cada valor es una variable con su valor por
+ * defecto; el widget de Elementor las pisa desde la pestaña Estilo.
+ */
+.ce-ficha {
+	--ce-fi-linea: color-mix(in srgb, currentColor 16%, transparent);
+	--ce-fi-suave: color-mix(in srgb, currentColor 62%, transparent);
+	--ce-fi-acento: currentColor;
+	--ce-cal-borde-color: currentColor;
+	margin: 0 0 1.8em;
+}
+.ce-ficha .ce-ico { width: 1.15em; height: 1.15em; flex: none; color: var(--ce-fi-ico, currentColor); }
+.ce-ficha .ce-cuenta { display: inline-block; font-weight: 700; color: var(--ce-fi-cuenta, var(--ce-fi-acento)); white-space: nowrap; }
+.ce-chips { display: flex; flex-wrap: wrap; gap: .5em; margin: 0 0 1.2em; }
+.ce-chip {
+	display: inline-block; font-size: .78em; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; line-height: 1;
+	padding: .55em .9em; border-radius: 999px;
+	background: var(--ce-fi-chip-fondo, color-mix(in srgb, var(--ce-fi-acento) 14%, transparent)); color: var(--ce-fi-chip-tinta, var(--ce-fi-acento));
+}
+.ce-chip-estado { background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; }
+
+/* Lista */
+.ce-ficha dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--ce-fi-linea); }
+.ce-ficha-fila { display: grid; grid-template-columns: var(--ce-fi-etq, 8em) minmax(0, 1fr); gap: 1em; padding: var(--ce-fi-aire, .9em) 0; border-bottom: 1px solid var(--ce-fi-linea); }
+.ce-ficha dt { font-weight: 600; margin: 0; display: flex; gap: .6em; align-items: flex-start; }
+.ce-ficha dt .ce-ico { margin-top: .1em; }
 .ce-ficha dd { margin: 0; }
+.ce-ficha-lista .ce-cuenta { margin-left: .5em; }
 .ce-ficha-accion { margin-top: 1.2em; }
+
+/* Añadidos: calendario y compartir, mapa, más fechas */
+.ce-ficha.ce-ficha .ce-ficha-acciones { display: flex; flex-wrap: wrap; gap: .6em 1.4em; margin-top: 1em; font-size: .92em; }
+.ce-ficha.ce-ficha .ce-accion-enlace {
+	appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; box-shadow: none;
+	font: inherit; letter-spacing: inherit; text-transform: none; line-height: 1.4;
+	display: inline-flex; align-items: center; gap: .45em; text-decoration: none;
+	color: var(--ce-fi-acciones, inherit);
+}
+.ce-ficha.ce-ficha .ce-accion-enlace:hover, .ce-ficha.ce-ficha .ce-accion-enlace:focus-visible { background: none; color: var(--ce-fi-acciones, inherit); text-decoration: underline; text-underline-offset: .18em; }
+.ce-ficha .ce-accion-enlace .ce-ico { color: inherit; }
+.ce-ficha .ce-accion-enlace[hidden] { display: none; }
+.ce-copiado span::after { content: " ✓"; }
+
+.ce-mapa { margin-top: 1em; border-radius: var(--ce-fi-mapa-radio, 8px); overflow: hidden; background: color-mix(in srgb, currentColor 6%, transparent); min-height: 3.2em; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em; padding: 1em; text-align: center; }
+.ce-ficha.ce-ficha .ce-mapa-btn {
+	appearance: none; cursor: pointer; font: inherit; font-weight: 600; text-transform: none; letter-spacing: inherit; line-height: 1.2; box-shadow: none;
+	display: inline-flex; align-items: center; gap: .5em; padding: .6em 1.1em; border-radius: 999px;
+	border: 1.5px solid currentColor; background: transparent; color: inherit;
+}
+.ce-ficha.ce-ficha .ce-mapa-btn:hover, .ce-ficha.ce-ficha .ce-mapa-btn:focus-visible { background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; }
+.ce-mapa-nota { font-size: .78em; color: var(--ce-fi-suave); }
+.ce-mapa.ce-mapa-abierto { padding: 0; display: block; }
+.ce-mapa iframe { display: block; width: 100%; height: var(--ce-fi-mapa-alto, 260px); border: 0; }
+
+.ce-mas { margin-top: 2em; }
+.ce-ficha .ce-mas-titulo { margin: 0 0 .6em; font-size: .82em; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ce-fi-mas-titulo, var(--ce-fi-suave)); }
+.ce-mas-lista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ce-fi-linea); }
+.ce-mas-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3em 1em; padding: .8em 0; border-bottom: 1px solid var(--ce-fi-linea); margin: 0; }
+.ce-mas-fecha { font-weight: 800; text-transform: uppercase; min-width: 4.6em; font-size: var(--ce-fi-mas-fecha, 1em); color: var(--ce-fi-mas-fecha-color, inherit); }
+.ce-mas-donde { flex: 1 1 0; min-width: 0; }
+.ce-ficha .ce-mas-ver { margin-left: auto; font-size: .9em; text-decoration: none; }
+.ce-ficha .ce-mas-ver:hover { text-decoration: underline; }
+
+/* Dos columnas */
+.ce-columnas { display: grid; grid-template-columns: minmax(0, 1fr) var(--ce-ta-ancho, 340px); gap: var(--ce-ta-hueco, 2.5em); align-items: start; }
+.ce-columnas-sola { grid-template-columns: minmax(0, var(--ce-ta-ancho-sola, 520px)); }
+.ce-columnas-texto > :first-child { margin-top: 0; }
+.ce-tarjeta {
+	position: sticky; top: var(--ce-ta-arriba, 20px);
+	padding: var(--ce-ta-relleno, 1.5em); border-radius: var(--ce-ta-radio, 12px);
+	background: var(--ce-ta-fondo, transparent); color: var(--ce-ta-tinta, inherit);
+	border: var(--ce-ta-borde, 1px) solid var(--ce-ta-borde-color, var(--ce-fi-linea));
+	box-shadow: var(--ce-ta-sombra, 0 10px 30px rgba(0, 0, 0, .06));
+}
+.ce-tarjeta-top { display: flex; gap: 1em; align-items: center; margin-bottom: 1.1em; }
+.ce-ficha-columnas .ce-ficha-hoja { --ce-cal-ancho: var(--ce-ta-hoja, 4.8em); flex: none; }
+.ce-tarjeta-cuando { display: flex; flex-direction: column; gap: .25em; min-width: 0; }
+.ce-tarjeta-hora { font-size: 1.15em; font-weight: 700; }
+.ce-tarjeta-puertas { font-size: .9em; color: var(--ce-fi-suave); }
+.ce-tarjeta-lin { display: flex; gap: .7em; padding: .8em 0; border-top: 1px solid var(--ce-fi-linea); line-height: 1.45; }
+.ce-tarjeta .ce-ficha-accion { margin-top: 1em; }
+.ce-tarjeta .ce-ficha-accion .ce-boton { display: flex; justify-content: center; width: 100%; }
+
+/* Entrada */
+.ce-ficha-entrada { --ce-cal-borde-color: var(--ce-en-tinta, #fff); }
+.ce-entrada {
+	display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch;
+	background: var(--ce-en-fondo, #0f1416); color: var(--ce-en-tinta, #fff); border-radius: var(--ce-en-radio, 14px); overflow: hidden;
+}
+.ce-entrada-fecha { padding: var(--ce-en-relleno, 1.6em); display: flex; align-items: center; justify-content: center; border-right: 2px dashed var(--ce-en-corte, color-mix(in srgb, currentColor 28%, transparent)); }
+.ce-ficha-entrada .ce-ficha-hoja { --ce-cal-ancho: var(--ce-en-hoja, 6.2em); }
+.ce-entrada-datos { padding: var(--ce-en-relleno, 1.6em) calc(var(--ce-en-relleno, 1.6em) * 1.2); min-width: 0; align-self: center; }
+.ce-ficha .ce-entrada-lugar { margin: 0 0 .3em; font-size: var(--ce-en-lugar-tam, 1.4em); line-height: 1.2; color: inherit; }
+.ce-entrada-datos p { margin: .25em 0; color: color-mix(in srgb, currentColor 75%, transparent); line-height: 1.5; }
+.ce-ficha .ce-entrada a:not(.elementor-button) { color: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.ce-ficha .ce-entrada .ce-cuenta { color: var(--ce-en-cuenta, var(--ce-fi-cuenta, var(--ce-fi-acento))); }
+.ce-entrada-compra { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6em; padding: var(--ce-en-relleno, 1.6em); min-width: var(--ce-en-compra-ancho, 13em); background: var(--ce-en-compra-fondo, color-mix(in srgb, currentColor 5%, transparent)); text-align: center; }
+.ce-entrada-precio { font-size: .95em; color: color-mix(in srgb, currentColor 75%, transparent); }
+.ce-entrada .ce-estado { color: inherit; }
+
+@media (max-width: 760px) {
+	.ce-columnas { grid-template-columns: 1fr; }
+	.ce-tarjeta { position: static; }
+	.ce-entrada { grid-template-columns: 1fr; }
+	.ce-entrada-fecha { border-right: 0; border-bottom: 2px dashed var(--ce-en-corte, color-mix(in srgb, currentColor 28%, transparent)); }
+	.ce-entrada-datos { text-align: center; }
+}
 @media (max-width: 520px) { .ce-ficha-fila { grid-template-columns: 1fr; gap: .2em; } }

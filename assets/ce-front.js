@@ -23,7 +23,7 @@
 	}
 
 	function ajustarMes(fecha) {
-		var raiz = fecha.closest('.ce-listado');
+		var raiz = fecha.closest('.ce-listado, .ce-ficha-hoja');
 		if (raiz && !raiz.classList.contains('ce-f-clasico')) {
 			if (!raiz.classList.contains('ce-f-linea')) { ajustarCaja(fecha); }
 			return;
@@ -84,7 +84,63 @@
 		});
 	}
 
-	function todos() { document.querySelectorAll('[data-ce-listado]').forEach(iniciar); }
+	// ── Ficha del evento ─────────────────────────────────────────────
+	// Cuenta atrás con la fecha del navegador (la del servidor puede venir de
+	// una caché), compartir con el menú del móvil, copiar el enlace y el mapa
+	// de Google, que solo se carga cuando se pide.
+	function cuenta(el) {
+		var p = (el.getAttribute('data-ce-dia') || '').split('-');
+		if (p.length !== 3) { return; }
+		var dia = new Date(+p[0], +p[1] - 1, +p[2]);
+		var hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+		var n = Math.round((dia - hoy) / 864e5);
+		if (n < 0) { el.hidden = true; return; }
+		el.textContent = n === 0 ? 'Es hoy' : (n === 1 ? 'Es mañana' : 'Faltan ' + n + ' días');
+	}
+
+	function iniciarFicha(f) {
+		if (f.dataset.ceListo) { return; }
+		f.dataset.ceListo = '1';
+		f.querySelectorAll('.ce-cuenta').forEach(cuenta);
+		f.querySelectorAll('.ce-fecha').forEach(ajustarMes);
+		f.querySelectorAll('[data-ce-compartir]').forEach(function (b) {
+			if (!navigator.share) { return; }
+			b.hidden = false;
+			b.addEventListener('click', function () {
+				navigator.share({ title: b.getAttribute('data-ce-titulo') || document.title, url: b.getAttribute('data-ce-compartir') }).catch(function () {});
+			});
+		});
+		f.querySelectorAll('[data-ce-copiar]').forEach(function (b) {
+			b.addEventListener('click', function () {
+				var url = b.getAttribute('data-ce-copiar');
+				var hecho = function () { b.classList.add('ce-copiado'); setTimeout(function () { b.classList.remove('ce-copiado'); }, 2000); };
+				if (navigator.clipboard && navigator.clipboard.writeText) {
+					navigator.clipboard.writeText(url).then(hecho, function () { window.prompt('Copia el enlace:', url); });
+				} else {
+					window.prompt('Copia el enlace:', url);
+				}
+			});
+		});
+		f.querySelectorAll('[data-ce-mapa]').forEach(function (m) {
+			var b = m.querySelector('.ce-mapa-btn');
+			if (!b) { return; }
+			b.addEventListener('click', function () {
+				var i = document.createElement('iframe');
+				i.src = m.getAttribute('data-ce-mapa');
+				i.loading = 'lazy';
+				i.title = 'Mapa del lugar';
+				i.referrerPolicy = 'no-referrer-when-downgrade';
+				m.textContent = '';
+				m.appendChild(i);
+				m.classList.add('ce-mapa-abierto');
+			});
+		});
+	}
+
+	function todos() {
+		document.querySelectorAll('[data-ce-listado]').forEach(iniciar);
+		document.querySelectorAll('[data-ce-ficha]').forEach(iniciarFicha);
+	}
 	if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', todos); } else { todos(); }
 
 	// Con la tipografía definitiva cargada, y al cambiar el tamaño de la ventana o girar el móvil.
@@ -102,6 +158,10 @@
 			window.elementorFrontend.hooks.addAction('frontend/element_ready/caracool_eventos.default', function ($el) {
 				var el = $el && $el[0] ? $el[0].querySelector('[data-ce-listado]') : null;
 				if (el) { delete el.dataset.ceListo; iniciar(el); }
+			});
+			window.elementorFrontend.hooks.addAction('frontend/element_ready/caracool_evento_ficha.default', function ($el) {
+				var el = $el && $el[0] ? $el[0].querySelector('[data-ce-ficha]') : null;
+				if (el) { delete el.dataset.ceListo; iniciarFicha(el); }
 			});
 		}
 	});
