@@ -6,12 +6,35 @@
 	// mes se ve igual con su tamaño del CSS.
 	function ancho(el) { return el.getBoundingClientRect().width; }
 
+	// En los diseños con caja (calendario, bloque, contorno) el mes no se toca:
+	// solo se encoge el número si no cabe, como pasa con un «10–12».
+	function ajustarCaja(fecha) {
+		var caja = fecha.querySelector('.ce-fecha-caja');
+		var dia = fecha.querySelector('.ce-dia');
+		if (!caja || !dia) { return; }
+		dia.style.fontSize = '';
+		var cs = window.getComputedStyle(caja);
+		var hueco = caja.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+		var w = dia.scrollWidth;
+		if (hueco > 0 && w > hueco) {
+			var td = parseFloat(window.getComputedStyle(dia).fontSize);
+			dia.style.fontSize = (td * hueco / w * 0.96).toFixed(2) + 'px';
+		}
+	}
+
 	function ajustarMes(fecha) {
+		var raiz = fecha.closest('.ce-listado');
+		if (raiz && !raiz.classList.contains('ce-f-clasico')) {
+			if (!raiz.classList.contains('ce-f-linea')) { ajustarCaja(fecha); }
+			return;
+		}
 		var dia = fecha.querySelector('.ce-dia');
 		var mes = fecha.querySelector('.ce-mes');
 		if (!dia || !mes) { return; }
 		dia.style.fontSize = '';
 		mes.style.fontSize = '';
+		// Con el tamaño del mes puesto a mano en el widget, no se calcula nada.
+		if (fecha.closest('.ce-mes-manual-yes')) { return; }
 		var hueco = fecha.parentNode ? ancho(fecha) : 0;
 		if (!ancho(dia)) { return; }
 		if (hueco && ancho(dia) > hueco) {
