@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.6.1, 29 de octubre de 2026
+
+- Los borradores ya no se quedan escondidos en el admin. Las pestañas Próximos y Pasados enseñan también los borradores, los pendientes de revisión, los privados y los programados, mezclados por fecha con los publicados y con la marca de WordPress al lado del título («— Borrador»). Antes solo salían en su propia pestaña, al final de la fila.
+- Los contadores de Próximos y Pasados cuentan todos esos estados. La papelera sigue aparte.
+- En la web no cambia nada: un borrador no sale en ningún listado ni en los datos para Google.
+
 ## 0.6.0, 21 de octubre de 2026
 
 - Los textos de los dos widgets tienen en Estilo los mismos controles que el Encabezado de Elementor, en el mismo orden: alineación, tipografía, trazo, sombra, modo de fusión y color en «Normal» y «Al pasar el cursor», con su duración de la transición. Cada texto tiene su sección: en el listado, título, lugar y hora, y las cuatro partes de la fecha; en la ficha, etiquetas, datos, lugar, horas, precio, cuenta atrás, enlaces, calendario y compartir, y cada parte de «Más fechas».

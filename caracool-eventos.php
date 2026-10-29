@@ -3,7 +3,7 @@
  * Plugin Name:  Caracool Eventos
  * Plugin URI:   https://github.com/caracoolnet/wp-caracool-eventos
  * Description:  Conciertos y eventos con fecha, hora, lugar y enlace de venta. Se agrupan por categorías (giras, tipos), el listado esconde solos los que ya han pasado y cada evento lleva los datos estructurados que pide Google.
- * Version:      0.6.0
+ * Version:      0.6.1
  * Author:       Caracool
  * Author URI:   https://caracool.net
  * License:      GPL-2.0-or-later
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CARACOOL_EVENTOS_VERSION', '0.6.0' );
+define( 'CARACOOL_EVENTOS_VERSION', '0.6.1' );
 define( 'CARACOOL_EVENTOS_FILE', __FILE__ );
 define( 'CARACOOL_EVENTOS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CARACOOL_EVENTOS_URL', plugin_dir_url( __FILE__ ) );

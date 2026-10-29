@@ -21,7 +21,7 @@ Caracool → Eventos. Tres pestañas:
 - **Cómo se usa.** Opciones del shortcode.
 - **Importar.** Pegar una lista de eventos en JSON. Si un evento ya existe con la misma dirección, se actualiza. La hora de fin solo se importa si viene en el campo `hora_fin`.
 
-Los eventos se crean y editan en el menú **Eventos**, con el editor clásico para que la caja de datos quede a la vista. La lista se abre en **Próximos**; al lado están **Pasados**, **Borradores** y **Papelera**.
+Los eventos se crean y editan en el menú **Eventos**, con el editor clásico para que la caja de datos quede a la vista. La lista se abre en **Próximos**; al lado están **Pasados**, **Borradores** y **Papelera**. Próximos y Pasados enseñan también los borradores, los pendientes, los privados y los programados, con su marca al lado del título («— Borrador»). En la web solo salen los publicados.
 
 ## Cómo se pone en una página
 
