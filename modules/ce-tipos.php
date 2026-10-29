@@ -504,13 +504,22 @@ function caracool_eventos_vista_admin() {
 	return '';
 }
 
+/**
+ * Estados que salen en las pestañas Próximos y Pasados del admin: todos menos
+ * la papelera y los borradores automáticos. Así un borrador no se queda
+ * escondido; WordPress le pone «— Borrador» al lado del título.
+ */
+function caracool_eventos_estados_vista() {
+	return array( 'publish', 'future', 'draft', 'pending', 'private' );
+}
+
 /** Condición de fecha de cada pestaña, para meta_query. */
 function caracool_eventos_condicion_vista( $vista ) {
 	$ahora = time();
 	if ( 'pasados' === $vista ) {
 		return array( 'key' => '_ce_ts_fin', 'value' => $ahora, 'compare' => '<', 'type' => 'NUMERIC' );
 	}
-	// Próximos: los que aún no han terminado y los publicados sin fecha, para que no se pierdan.
+	// Próximos: los que aún no han terminado y los que no tienen fecha, para que no se pierdan.
 	return array(
 		'relation' => 'OR',
 		array( 'key' => '_ce_ts_fin', 'value' => $ahora, 'compare' => '>=', 'type' => 'NUMERIC' ),
@@ -518,12 +527,13 @@ function caracool_eventos_condicion_vista( $vista ) {
 	);
 }
 
-/** Cuántos eventos publicados hay en una pestaña. */
+/** Cuántos eventos hay en una pestaña, publicados o no. */
 function caracool_eventos_contar_vista( $vista ) {
 	$q = new WP_Query(
 		array(
 			'post_type'              => 'cc_evento',
-			'post_status'            => 'publish',
+			'post_status'            => caracool_eventos_estados_vista(),
+			'perm'                   => 'readable',
 			'posts_per_page'         => 1,
 			'fields'                 => 'ids',
 			'no_found_rows'          => false,
@@ -584,7 +594,8 @@ add_action(
 		);
 
 		if ( $vista ) {
-			$q->set( 'post_status', 'publish' );
+			$q->set( 'post_status', caracool_eventos_estados_vista() );
+			$q->set( 'perm', 'readable' );
 			$q->set( 'meta_query', array( 'relation' => 'AND', $fecha, caracool_eventos_condicion_vista( $vista ) ) );
 			// Próximos, del más cercano al más lejano; pasados, del más reciente al más antiguo.
 			$dir = 'pasados' === $vista ? 'DESC' : 'ASC';
